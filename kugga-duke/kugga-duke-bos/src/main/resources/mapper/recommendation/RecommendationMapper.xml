@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.bos.dal.mysql.recommendation.DukeRecommendationMapper">
+
+    <select id="pageRecommendation"
+            resultType="com.hisun.kugga.duke.bos.controller.admin.recommendation.vo.RecommendationRespVO">
+        SELECT du.username AS username,
+        du.last_name AS lastName,
+        du.first_name AS firstName,
+        du.email AS email,
+        (SELECT username FROM duke_user WHERE id = dr.recommended_id) AS getUsername,
+        (SELECT last_name FROM duke_user WHERE id = dr.recommended_id) AS getLastName,
+        (SELECT first_name FROM duke_user WHERE id = dr.recommended_id) AS getFirstName,
+        dl.league_name AS leagueName,
+        dr.create_time AS createTime
+        FROM duke_recommendation dr
+        LEFT JOIN duke_league dl ON dr.recommender_league_id = dl.id
+        LEFT JOIN duke_user du ON du.id = dr.recommender_id
+        <where>
+            <if test="email!=null and email!=''">
+                AND du.email = #{email}
+            </if>
+            <if test="firstName!=null and firstName!=''">
+                AND du.first_name = #{firstName}
+            </if>
+            <if test="lastName!=null and lastName!=''">
+                AND du.last_name = #{lastName}
+            </if>
+        </where>
+        ORDER BY dr.create_time DESC
+    </select>
+</mapper>

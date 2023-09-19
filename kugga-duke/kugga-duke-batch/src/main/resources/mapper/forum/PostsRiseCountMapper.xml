@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.batch.dal.mysql.forum.PostsRiseCountMapper">
+    <!-- 查询时间断内的回复（热度）统计 -->
+    <select id="queryRiseNum"
+            resultType="com.hisun.kugga.duke.batch.dal.dataobject.forum.PostsRiseCountDO">
+        select posts_id   as postsId,
+               sum(cnt)   as num,
+               #{endTime} as createTime
+        from (
+                 select posts_id, count(1) cnt
+                 from duke_posts_floor t1
+                          inner join duke_posts dp0 on dp0.id = t1.posts_id
+                 where t1.create_time between #{startTime} and #{endTime}
+                   and t1.deleted = false
+                   and dp0.plate = '0'
+                   and dp0.deleted = false
+                 group by t1.posts_id
+                 union all
+                 select posts_id, count(1) cnt
+                 from duke_posts_comment t2
+                          inner join duke_posts dp1 on dp1.id = t2.posts_id
+                 where t2.create_time between #{startTime} and #{endTime}
+                   and t2.deleted = false
+                   and dp1.plate = '0'
+                   and dp1.deleted = false
+                 group by t2.posts_id) t0
+        group by t0.posts_id
+    </select>
+</mapper>

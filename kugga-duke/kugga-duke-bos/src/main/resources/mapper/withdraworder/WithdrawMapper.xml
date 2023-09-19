@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.bos.dal.mysql.withdraworder.WithdrawMapper">
+
+    <select id="pageSelectOrders"
+            resultType="com.hisun.kugga.duke.bos.dal.dataobject.withdraworder.WithdrawOrderDO">
+        select app_order_no,
+        create_time,
+        amount,
+        withdraw_channel,
+        `status`
+        from duke_withdraw_order
+        <where>
+            <if test="beginCreateTime!=null and endCreateTime!=null">
+                and create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="appOrderNo!=null and appOrderNo!=''">
+                and app_order_no = #{appOrderNo}
+            </if>
+            <if test="status!=null and status!=''">
+                and status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+</mapper>

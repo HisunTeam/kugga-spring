@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.user.dal.mysql.FavoriteMapper">
+
+    <delete id="deleteByUserIdAndContendIdAndType">
+        delete
+        from duke_favorite
+        where user_id = #{reqVO.userId}
+          and content_id = #{reqVO.contentId}
+          and type = #{reqVO.type};
+    </delete>
+
+
+    <select id="selectLeaguePageByByCondition"
+            resultType="com.hisun.kugga.duke.user.controller.vo.favorite.FavoriteRespVO">
+        select distinct f.id            id,
+                        f.user_id       userId,
+                        f.content_id    contentId,
+                        l.league_name   leagueName,
+                        l.league_desc   content,
+                        l.league_avatar avatar,
+                        f.update_time
+        from duke_favorite f
+            inner join duke_league l on f.content_id = l.id
+            left join duke_favorite_group_relation gr on f.id = gr.favorite_id and gr.type = f.type
+        <where>
+            f.type = #{reqVO.type}
+            and user_id = #{reqVO.userId}
+            <if test="reqVO.groupId!=null and reqVO.groupId!=''">
+                and gr.group_id = #{reqVO.groupId}
+            </if>
+        </where>
+        order by f.update_time desc
+    </select>
+    <select id="selectRecommendationPageByByCondition"
+            resultType="com.hisun.kugga.duke.user.controller.vo.favorite.FavoriteRespVO">
+        select distinct f.id                    id,
+                        f.content_id            contentId,
+                        f.favorite_league_id    favoriteLeagueId,
+                        r.recommended_id        recommendedId,
+                        r.recommender_league_id recommenderLeagueId,
+                        u.last_name             lastName,
+                        u.first_name            firstName,
+                        u.avatar                avatar,
+                        f.update_time
+        from duke_favorite f
+                 inner join duke_recommendation r on f.content_id = r.id
+                 left join duke_user u on r.recommended_id = u.id
+                 left join duke_favorite_group_relation gr on f.id = gr.favorite_id and gr.type = f.type
+        <where>
+            f.type = #{reqVO.type}
+            and f.user_id = #{reqVO.userId}
+            <if test="reqVO.groupId!=null and reqVO.groupId!=''">
+                and gr.group_id = #{reqVO.groupId}
+            </if>
+        </where>
+        order by f.update_time desc
+    </select>
+    <select id="selectAuthLeagues"
+            resultType="com.hisun.kugga.duke.user.controller.vo.favorite.FavoriteRespVO">
+        select f.id id,
+        f.content_id contentId,
+        l.league_name leagueName,
+        l.league_desc content,
+        l.league_avatar avatar,
+        r.auth_price price
+        from duke_favorite f inner join duke_league l on f.content_id = l.id
+        inner join duke_league_rule r on l.id = r.league_id
+        where f.type = #{reqVO.type} and user_id = #{reqVO.userId}
+        and l.auth_flag = true
+        <if test='reqVO.authType == "G"'>
+            and r.enabled_auth = true
+        </if>
+        order by f.update_time desc
+    </select>
+
+    <select id="selectAuthLeaguesRecommendation"
+            resultType="com.hisun.kugga.duke.user.controller.vo.favorite.FavoriteRespVO">
+        select f.id            id,
+               f.content_id    contentId,
+               l.league_name   leagueName,
+               l.league_desc   content,
+               l.league_avatar avatar,
+               r.report_price  price
+        from duke_favorite f
+                 inner join duke_league l on f.content_id = l.id
+                 inner join duke_league_rule r on l.id = r.league_id
+        where f.type = #{reqVO.type}
+          and user_id = #{reqVO.userId}
+          and l.auth_flag = true
+        order by f.update_time desc
+    </select>
+
+
+    <select id="selectUserJoinLeagueIds" resultType="java.lang.Long">
+        select league_id
+        from duke_league_member
+        where user_id = #{userId}
+          and deleted = false
+    </select>
+    <select id="getRecommendationContentByRecomId" resultType="java.lang.String">
+        select content
+        from duke_recommendation_content
+        where recommendation_id = #{recommendationId}
+        order by id asc
+    </select>
+
+</mapper>

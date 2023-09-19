@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.league.dal.mysql.LeagueLabelMapper">
+
+    <!-- 查询公会详情(并获取当前登录用户是否为公会成员) -->
+    <select id="selectLeagueDetail"
+            resultType="com.hisun.kugga.duke.league.vo.SimpleLabelsVO">
+        select label_value as labelValue,
+               label_name  as labelName
+        from duke_league_label
+        where display_flag = true
+          and language = 'en-US'
+          and
+        limit 5;
+    </select>
+</mapper>

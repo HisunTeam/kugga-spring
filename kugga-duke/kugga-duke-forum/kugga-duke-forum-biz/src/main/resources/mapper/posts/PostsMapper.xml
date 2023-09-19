@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.forum.dal.mysql.PostsMapper">
+
+    <sql id="page_posts_list">
+        t1.id as postsId,
+        t1.msg_id as msgId,
+        t1.plate as plate,
+        t1.group_id as groupId,
+        t1.posts_title as postsTitle,
+        t1.create_time as createTime,
+        t1.update_time as updateTime,
+        t1.new_reply_user_id as newReplyUserId,
+        t1.reply_time as replyTime,
+        t1.floor_count as floorCount,
+        t1.praise_num as praiseNum,
+        t1.trample_num as trampleNum,
+        t1.click_num as clickNum,
+        t1.collect_num as collectNum,
+        t1.share_num as shareNum,
+        t1.hot_num as hotNum,
+        t1.comment_num as commentNum,
+        t1.user_id as userId,
+        t1.hot_search_switch as hotSearchSwitch,
+        t2.avatar as avatar,
+        t2.username as userName,
+        t2.nickname as nickName,
+        t2.last_name as lastName,
+        t2.first_name as firstName,
+        t3.avatar as newReplyAvatar,
+        t3.username as newReplyUserName,
+        t3.nickname as newReplyNickName,
+        t3.last_name as newReplyLastName,
+        t3.first_name as newReplyFirstName,
+        false as belongToFlag
+    </sql>
+
+    <sql id="hot_posts_list">
+        t1.id          as postsId,
+        t1.msg_id      as msgId,
+        t1.plate       as plate,
+        t1.group_id    as groupId,
+        t1.posts_title as postsTitle,
+        t1.create_time as createTime,
+        t1.update_time as updateTime,
+        t1.reply_time  as replyTime,
+        t1.floor_count as floorCount,
+        t1.praise_num  as praiseNum,
+        t1.trample_num as trampleNum,
+        t1.click_num   as clickNum,
+        t1.collect_num as collectNum,
+        t1.share_num   as shareNum,
+        t1.hot_num     as hotNum,
+        t1.comment_num as commentNum,
+        t1.user_id     as userId,
+        t2.avatar      as avatar,
+        t2.username    as userName,
+        t2.nickname    as nickName,
+        t2.last_name   as lastName,
+        t2.first_name  as firstName
+    </sql>
+
+    <!-- 查询列表,根据创建时间排序 -->
+    <select id="selectPostsDetails"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsVO">
+        select
+        <include refid="page_posts_list"/>
+        from duke_posts t1
+        left join duke_user t2 on t1.user_id=t2.id
+        left join duke_user t3 on t1.new_reply_user_id=t3.id
+        where t1.id= #{id} and t1.deleted = '0'
+    </select>
+
+    <!-- 查询列表,根据创建时间排序 -->
+    <select id="pagePostsSortCreateTime" parameterType="com.hisun.kugga.duke.forum.vo.PostsReqVO"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsVO">
+        select
+        <include refid="page_posts_list"/>
+        from duke_posts t1
+        left join duke_user t2 on t1.user_id=t2.id
+        left join duke_user t3 on t1.new_reply_user_id=t3.id
+        <where>
+            and t1.plate = #{param.plate}
+            and t1.deleted = '0'
+            <if test="param.groupId != null">
+                and group_id = #{param.groupId}
+            </if>
+            <if test="param.districtId != null">
+                and district = #{param.districtId}
+            </if>
+        </where>
+        order by t1.create_time desc
+    </select>
+
+    <!-- 查询列表,根据最新回复时间排序 -->
+    <select id="pagePostsSortReplyTime" parameterType="com.hisun.kugga.duke.forum.vo.PostsReqVO"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsVO">
+        select
+        <include refid="page_posts_list"/>
+        from duke_posts t1
+        left join duke_user t2 on t1.user_id=t2.id
+        left join duke_user t3 on t1.new_reply_user_id=t3.id
+        <where>
+            and t1.plate = #{param.plate}
+            and t1.deleted = '0'
+            <if test="param.groupId != null">
+                and group_id = #{param.groupId}
+            </if>
+            <if test="param.districtId != null">
+                and district = #{param.districtId}
+            </if>
+        </where>
+        order by t1.reply_time desc,t1.create_time desc
+    </select>
+
+    <!-- 查询列表,根据热度排序 -->
+    <select id="pagePostsSortHot" parameterType="com.hisun.kugga.duke.forum.vo.PostsReqVO"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsVO">
+        select
+        <include refid="page_posts_list"/>
+        from duke_posts t1
+        left join duke_user t2 on t1.user_id=t2.id
+        left join duke_user t3 on t1.new_reply_user_id=t3.id
+        <where>
+            and t1.plate = #{param.plate}
+            and t1.deleted = '0'
+            <if test="param.groupId != null">
+                and group_id = #{groupId}
+            </if>
+            <if test="param.districtId != null">
+                and district = #{param.districtId}
+            </if>
+        </where>
+        order by t1.hot_num desc,t1.create_time desc
+    </select>
+
+    <!-- 查询非匿名(公会)热贴 -->
+    <select id="hotPosts"
+            resultType="com.hisun.kugga.duke.forum.vo.HotPostsVO">
+        select
+        <include refid="hot_posts_list"/>
+        from duke_posts t1
+                 left join duke_user t2 on t1.user_id = t2.id
+                 left join duke_league_rule t3 on t1.group_id = t3.league_id
+                 left join duke_league t4 on t1.group_id = t4.id
+        where t1.plate = '0'
+          and t1.create_time &gt;= #{createTime}
+          and t1.hot_search_switch = true
+          and t1.deleted = false
+          and t2.deleted = false
+          and t3.posts_search_switch = true
+          and t3.enabled_user_join = true
+          and t4.deleted = false
+        order by t1.hot_num desc, t1.create_time desc
+            limit 5
+    </select>
+
+    <!-- 查询匿名热贴 -->
+    <select id="anonymousHotPosts"
+            resultType="com.hisun.kugga.duke.forum.vo.HotPostsVO">
+        select
+        <include refid="hot_posts_list"/>
+        from duke_posts t1
+                 left join duke_user t2 on t1.user_id = t2.id
+        where t1.plate = '1'
+          and t1.create_time &gt;= #{createTime}
+          and t1.hot_search_switch = true
+          and t1.deleted = false
+          and t2.deleted = false
+        order by t1.hot_num desc, t1.create_time desc
+            limit 5
+    </select>
+
+    <!-- 根据标签颁查询贴子列表 -->
+    <select id="pageLabelPosts" resultType="com.hisun.kugga.duke.forum.vo.PostsVO">
+        select
+        <include refid="page_posts_list"/>
+        from duke_posts_label_relation t0
+        left join duke_posts t1 on t0.posts_id = t1.id
+        left join duke_user t2 on t1.user_id=t2.id
+        left join duke_user t3 on t1.new_reply_user_id=t3.id
+        left join duke_league_rule t4 on t1.group_id = t4.league_id
+        where t0.label_id = #{labelId}
+        and ((t4.enabled_user_join = true and t1.plate = '0') or t1.plate = '1')
+        order by t1.reply_time desc,t1.create_time desc
+    </select>
+
+    <!-- 分页查询用户的收藏列表(支持收藏分组查询) -->
+    <select id="pagePostsCollection" resultType="com.hisun.kugga.duke.forum.vo.PostsVO">
+        select
+        <include refid="page_posts_list"/>
+        from duke_posts_collection t0
+        left join duke_posts t1 on t0.posts_id=t1.id
+        left join duke_user t2 on t1.user_id=t2.id
+        left join duke_user t3 on t1.new_reply_user_id=t3.id
+        <if test="groupId != null">
+        left join duke_favorite_group_relation t4 on t0.id=t4.favorite_id and t4.type='P'
+        </if>
+        <where>
+            and t0.user_id = #{userId}
+            <if test="groupId != null">
+                and t4.group_id = #{groupId}
+            </if>
+        </where>
+        order by t0.create_time desc
+    </select>
+
+    <!-- 查询贴子拥有的标签列表 -->
+    <select id="selectPostsLabel"
+            resultType="com.hisun.kugga.duke.forum.vo.LabelVO">
+        select
+            t2.id as labelId,
+            t2.label_name as labelName
+        from duke_posts_label_relation t1
+                 left join duke_forum_label t2 on t1.label_id=t2.id
+        where t1.posts_id = #{postsId}
+    </select>
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.user.cv.dal.mysql.resumeexperience.ResumeExperienceMapper">
+
+
+    <update id="updateExperienceById">
+        UPDATE duke_resume_experience
+        SET begin_time    = #{experienceDO.beginTime},
+            end_time      = #{experienceDO.endTime},
+            school        = #{experienceDO.school},
+            degree        = #{experienceDO.degree},
+            major         = #{experienceDO.major},
+            company       = #{experienceDO.company},
+            position      = #{experienceDO.position},
+            description   = #{experienceDO.description},
+            type          = #{experienceDO.type},
+            deleted       = #{experienceDO.deleted},
+            cert_flag     = #{experienceDO.certFlag},
+            certification = #{experienceDO.certification},
+            remark        = #{experienceDO.remark},
+            suggestion    = #{experienceDO.suggestion}
+        WHERE id = #{experienceDO.id}
+    </update>
+</mapper>

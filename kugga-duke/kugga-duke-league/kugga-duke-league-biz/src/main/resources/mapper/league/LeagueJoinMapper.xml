@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.league.dal.mysql.LeagueJoinMapper">
+
+
+    <!--
+    select j.id,
+       j.user_id userId,
+       j.league_id leagueId,
+       j.business_status approvalStatus,
+       j.create_time createTime,
+       u.first_name firstName,
+       u.last_name lastName,
+       l.league_name leagueName,
+       l.league_avatar leagueAvatar
+from duke_task_league_join j
+    left join duke_user u on j.user_id = u.id and u.deleted = false
+    left join duke_league l on j.league_id = l.id and l.deleted = false
+where j.user_id = 2 and j.deleted = false
+order by j.create_time desc
+    -->
+    <select id="selectJoinLeaguePage"
+            resultType="com.hisun.kugga.duke.league.vo.joinLeague.LeagueJoinApprovalRespVO">
+        select j.id,
+               j.user_id         userId,
+               j.league_id       leagueId,
+               j.business_status approvalStatus,
+               j.join_reason     joinReason,
+               j.create_time     createTime,
+               u.first_name      firstName,
+               u.last_name       lastName,
+               l.league_name     leagueName,
+               l.league_avatar   leagueAvatar
+        from duke_task_league_join j
+                 left join duke_user u on j.user_id = u.id and u.deleted = false
+                 left join duke_league l on j.league_id = l.id and l.deleted = false
+        where j.user_id = #{pageVO.userId}
+          and pay_status != 1
+          and j.deleted = false
+        order by j.create_time desc
+    </select>
+
+    <!--
+    select *
+    from duke_task_league_join
+    where user_id = 2
+      and league_id = 74
+      and business_status = 0
+      and pay_status = 1
+      and expire_time > '2022-09-15 16:46:32'
+        and deleted = false;
+    -->
+    <select id="getCurrentValidApproval" resultType="com.hisun.kugga.duke.league.dal.dataobject.LeagueJoinDO">
+        select *
+        from duke_task_league_join
+        where user_id = #{userId}
+          and league_id = #{leagueId}
+          and business_status = #{status}
+            and pay_status != 1
+          and expire_time > #{now}
+          and deleted = false;
+    </select>
+</mapper>

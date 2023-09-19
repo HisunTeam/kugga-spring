@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.league.dal.mysql.LeagueJoinApprovalMapper">
+
+    <!--
+        select approvalId,userId,leagueId,approvalStatus,createTime,
+       u.first_name firstName,
+       u.last_name lastName,
+       u.avatar avatar,
+       l.league_name leagueName
+        from (select id approvalId,
+                     user_id userId,
+                     league_id leagueId,
+                     status approvalStatus,
+                     create_time createTime
+              from duke_task_league_join_approval
+              where deleted = false and league_id in (74,76,77)
+            ) tem
+            left join duke_user u on tem.userId = u.id and u.deleted = false
+            left join duke_league l on tem.leagueId = l.id and l.deleted = false
+            order by tem.createTime desc
+    -->
+    <select id="selectApprovalPage"
+            resultType="com.hisun.kugga.duke.league.vo.joinLeague.LeagueJoinApprovalRespVO">
+        select approvalId,userId,leagueId,approvalStatus,joinReason,createTime,
+        u.first_name firstName,
+        u.last_name lastName,
+        u.avatar avatar,
+        l.league_name leagueName
+        from (select id approvalId,
+        user_id userId,
+        league_id leagueId,
+        status approvalStatus,
+        join_reason joinReason,
+        create_time createTime
+        from duke_task_league_join_approval
+        where deleted = false
+        and league_id in
+        <foreach collection="adminLeagueIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        ) tem
+        left join duke_user u on tem.userId = u.id and u.deleted = false
+        left join duke_league l on tem.leagueId = l.id and l.deleted = false
+        order by tem.createTime desc
+    </select>
+    <select id="selectApprovalByLeagueId"
+            resultType="com.hisun.kugga.duke.league.dal.dataobject.LeagueJoinApprovalDO">
+        select *
+        from duke_task_league_join_approval
+        where league_id = #{leagueId}
+          and status = 0
+          and expire_time &gt; #{now}
+          and deleted = false
+    </select>
+
+    <select id="selectListUnApproval"
+            resultType="com.hisun.kugga.duke.league.dal.dataobject.LeagueJoinApprovalDO">
+        select *
+        from duke_task_league_join_approval
+        where league_id in
+        <foreach collection="adminLeagueIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and status = 0 and expire_time &gt; #{now} and deleted = false
+    </select>
+</mapper>

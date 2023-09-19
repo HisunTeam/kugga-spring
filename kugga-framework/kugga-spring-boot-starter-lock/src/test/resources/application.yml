@@ -1,0 +1,4 @@
+kugga:
+  lock:
+    default-wait-time: 30
+    default-lease-time: 100

@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.file.config.KuggaFileAutoConfiguration

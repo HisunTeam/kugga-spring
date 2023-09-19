@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.chat.dal.mysql.SessionMapper">
+
+    <!-- case when 不是本用户不更新，其他用户更新 1 代表未读，0 已读 -->
+    <!-- 此处的 update_time 为消息的发送时间, sessionDO.updateTime 消息发送的时间必须要小于更新read_time，如果read_time大于说明消息已经阅读过 -->
+    <!-- case when 不是本用户不更新会话框显示，其他用户更新 1 代表显示 -->
+    <update id="updateNewMessageByRoomId">
+        UPDATE chat_session
+        SET record_id   = #{sessionDO.recordId},
+            unread      = IF(user_id != #{userId} and #{unread} and #{sessionDO.updateTime} > read_time, 1, unread),
+            visible     = IF(user_id != #{userId}, 1, visible),
+            update_time = #{sessionDO.updateTime}
+        WHERE (room_id = #{roomId})
+    </update>
+
+    <select id="selectPageWithUserName"
+            resultType="com.hisun.kugga.duke.chat.controller.app.vo.session.SessionRespVO">
+        select user.first_name,
+               user.last_name,
+               user.avatar,
+               session.id,
+               session.user_id,
+               session.receive_user_id,
+               session.unread,
+               session.sticky,
+               session.session_type,
+               session.create_time,
+               session.update_time,
+               session.visible,
+               session.record_id,
+               session.room_id,
+               room.expire_time,
+               room.pay_type,
+               room.league_id,
+               room.pay_chat_status,
+               room.inviter_user_id,
+               record.data,
+               record.message_type
+        from chat_session session
+                 left join chat_room_record record on record_id = record.id,
+             duke_user user,
+             chat_room room
+        where session.user_id = #{userId}
+          and user.id = session.receive_user_id
+          and session.visible = 1
+          and room.id = session.room_id
+        order by session.update_time desc
+    </select>
+
+</mapper>

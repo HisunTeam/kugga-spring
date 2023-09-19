@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hisun.boot</groupId>
+        <artifactId>kugga-duke-pay</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>kugga-duke-pay-biz</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        pay 支付模块。
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-pay-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-system-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-security</artifactId>
+        </dependency>
+        <!-- DB 相关 -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-protection</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-biz-pay</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-rocketmq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-league-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-lock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-user-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <!--国密算法需要引入Bouncy Castle库的依赖-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.69</version>
+        </dependency>
+    </dependencies>
+
+</project>

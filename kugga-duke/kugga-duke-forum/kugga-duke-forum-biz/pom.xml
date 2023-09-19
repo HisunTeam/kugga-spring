@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hisun.boot</groupId>
+        <artifactId>kugga-duke-forum</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>kugga-duke-forum-biz</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        league 模块，论坛。
+        例如说：发贴修改贴
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-rocketmq</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--    权限认证    -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-security</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-league-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-forum-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-system-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-user-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+
+</project>

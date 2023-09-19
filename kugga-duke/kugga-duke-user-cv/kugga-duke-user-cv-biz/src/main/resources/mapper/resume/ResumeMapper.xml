@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.user.cv.dal.mysql.resume.ResumeMapper">
+
+
+    <select id="selectOneByUserId" resultType="com.hisun.kugga.duke.user.cv.controller.app.resume.vo.ResumeRespVO">
+        SELECT dr.id            AS id,
+               du.last_name     AS lastName,
+               du.first_name    AS firstName,
+               du.avatar        AS avatar,
+               dr.introduce     AS introduce,
+               dr.resume_name   AS resumeName,
+               dr.birthday      AS birthday,
+               dr.degree        AS degree,
+               dr.phone_num     AS phoneNum,
+               dr.email         AS email,
+               dr.skills        AS skills,
+               dr.sex,
+               dr.resume_avatar AS resumeAvatar,
+               dr.hide
+        FROM duke_user du
+                 LEFT JOIN duke_resume dr ON dr.resume_user_id = du.id
+        WHERE du.id = #{userId}
+        ORDER BY dr.create_time DESC
+    </select>
+
+    <select id="selectPageList" resultType="com.hisun.kugga.duke.user.cv.controller.app.resume.vo.ResumeRespVO">
+        SELECT dr.id         AS id,
+               du.last_name  AS lastName,
+               du.first_name AS firstName,
+               du.avatar     AS avatar,
+               dr.content    AS content
+        FROM duke_resume dr
+                 LEFT JOIN duke_user du ON dr.resume_user_id = du.id
+        WHERE dr.resume_user_id = #{userId}
+        ORDER BY dr.create_time DESC
+    </select>
+
+    <select id="getResumeTypeCount" resultType="java.lang.Integer">
+        select count(*) typeCount
+        from (select type from duke_resume_experience
+              where resume_id = #{resumeId} and deleted = false
+              group by type
+             ) tem;
+    </select>
+</mapper>

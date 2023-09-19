@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.user.dal.mysql.DukeUserMapper">
+
+
+    <!--
+    INSERT INTO duke_user_account (user_id,account_id, balance) VALUES ( #{userId},  #{accountId}, #{balance});
+    INSERT INTO duke_user_account (user_id, balance) VALUES ( #{userId}, #{balance});
+    -->
+    <insert id="insertUserAccount">
+        INSERT INTO duke_user_account (user_id, account_id, balance)
+        VALUES (#{userId}, #{accountId}, #{balance});
+    </insert>
+    <update id="updateAtGenAdd">
+        update duke_user_gen
+        set number = number + 1
+        where region_prefix = #{regionPrefix}
+          and number = #{num};
+    </update>
+    <select id="selectNumByRegionPrefix" resultType="java.lang.Integer">
+        select number
+        from duke_user_gen
+        where region_prefix = #{regionPrefix};
+    </select>
+    <select id="selectAccountByUserId" resultType="com.hisun.kugga.duke.user.controller.vo.auth.UserAccountVo">
+        select account_id accountId, balance
+        from duke_user_account
+        where user_id = #{userId}
+          and deleted = false;
+    </select>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.league.dal.mysql.LeagueMapper">
+
+    <!-- 查询具有认证权限的公会 -->
+    <select id="pageAuthLeague"
+            resultType="com.hisun.kugga.duke.league.vo.LeagueAndRuleVO">
+        select t1.id                as leagueId,
+               t1.league_name       as leagueName,
+               t1.league_avatar     as leagueAvatar,
+               t1.league_desc       as leagueDesc,
+               t1.auth_flag         as leagueAuthFlag,
+               t2.enabled_auth      as enabledAuth,
+               t2.enabled_user_join as enabledUserJoin,
+               t2.auth_price        as authPrice,
+               t2.chat_price        as reportPrice,
+               t2.report_price      as chatPrice
+        from duke_league t1
+                 left join duke_league_rule t2 on t1.id = t2.league_id
+        where t1.auth_flag = true
+          and t2.enabled_auth = true
+          and t1.deleted = '0'
+    </select>
+
+    <!-- 初始化公会账户表 -->
+    <insert id="initLeagueAccount">
+        insert into duke_league_account (league_id, account)
+        values (#{leagueId}, #{amount})
+    </insert>
+
+    <!-- 查询公会详情(并获取当前登录用户是否为公会成员) -->
+    <select id="selectLeagueDetail"
+            resultType="com.hisun.kugga.duke.league.vo.LeagueDetailsRespVO">
+        select t1.id                    as leagueId,
+               t1.league_name           as leagueName,
+               t1.league_desc           as leagueDesc,
+               t1.league_avatar         as leagueAvatar,
+               t1.auth_flag             as leagueAuthFlag,
+               true                     as leagueActivationFlag,
+               t1.create_time           as createTime,
+               t1.league_avatar,
+               (select count(1)
+                from duke_league_member lm
+                         right join duke_user us on lm.user_id = us.id and us.deleted = '0'
+                where lm.league_id = t1.id
+                  and lm.deleted = '0') as peopleNumber,
+               if((select id
+                   from duke_favorite fa
+                   where t1.id = fa.content_id and fa.type = 'G' and fa.user_id = #{userId}) is null, false,
+                  true)                    favoriteFlag,
+               t3.level                    userLevel
+        from duke_league t1
+                 left join duke_league_account t2 on t1.id = t2.league_id and t2.deleted = '0'
+                 left join duke_league_member t3 on t1.id = t3.league_id and t3.user_id = #{userId} and t3.deleted = '0'
+        where t1.id = #{leagueId}
+    </select>
+
+    <!-- 查询公会推荐列表（支持是否已推荐）2022年11月29日,产品(何江)说:只推荐已认证的公会-->
+    <select id="pageRecommends" resultType="com.hisun.kugga.duke.league.vo.LeagueRecommendsVO">
+        select
+        t1.id as leagueId,
+        t1.league_name as leagueName,
+        t1.league_avatar as leagueAvatar,
+        t1.league_desc as leagueDesc,
+        t1.auth_flag as leagueAuthFlag,
+        t1.sort_id,
+        true leagueActivationFlag,
+        if((select id from duke_favorite t2 where t1.id = t2.content_id and t2.type = 'G' and t2.user_id =
+        #{reqVO.userId} and t2.deleted = '0' ) is null, false, true) favoriteFlag
+        from duke_league t1
+        where t1.auth_flag = true
+        and t1.deleted = '0'
+        <if test="reqVO.content != null and reqVO.content != ''">
+            and (t1.league_name like CONCAT(CONCAT('%', #{reqVO.content}), '%') or t1.league_desc like
+            CONCAT(CONCAT('%', #{reqVO.content}), '%') )
+        </if>
+        order by t1.sort_id asc, t1.id desc
+    </select>
+
+    <!--搜索可查询到未认证公会-->
+    <select id="pageSearchRecommends" resultType="com.hisun.kugga.duke.league.vo.LeagueRecommendsVO">
+        select
+        t1.id as leagueId,
+        t1.league_name as leagueName,
+        t1.league_avatar as leagueAvatar,
+        t1.league_desc as leagueDesc,
+        t1.auth_flag as leagueAuthFlag,
+        t1.sort_id,
+        true leagueActivationFlag,
+        if((select id from duke_favorite t2 where t1.id = t2.content_id and t2.type = 'G' and t2.user_id =
+        #{reqVO.userId} and t2.deleted = '0' ) is null, false, true) favoriteFlag
+        from duke_league t1
+        where t1.deleted = '0'
+        <if test="reqVO.content != null and reqVO.content != ''">
+            and (t1.league_name like CONCAT(CONCAT('%', #{reqVO.content}), '%') or t1.league_desc like
+            CONCAT(CONCAT('%', #{reqVO.content}), '%') )
+        </if>
+        order by t1.sort_id asc, t1.id desc
+    </select>
+    <select id="selectUserAllJoinLeagueId" resultType="java.lang.Long">
+        select league_id from duke_league_member where user_id = #{userId} and deleted = false;
+    </select>
+
+</mapper>

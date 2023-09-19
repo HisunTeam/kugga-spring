@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.user.dal.mysql.favoritegroup.FavoriteGroupMapper">
+
+
+    <update id="updateGroupById">
+        UPDATE duke_favorite_group t
+        SET t.group_name  = #{favoriteGroupDO.groupName},
+            t.user_id     = #{favoriteGroupDO.userId},
+            t.type        = #{favoriteGroupDO.type},
+            t.deleted     = #{favoriteGroupDO.deleted}
+        WHERE id = #{favoriteGroupDO.id}
+    </update>
+    <select id="countByIdTypeUserId" resultType="java.lang.Integer">
+        select count(1)
+        from duke_favorite_group
+        where user_id = #{userId}
+          and type = #{type}
+          and id = #{id}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hisun.boot</groupId>
+        <artifactId>kugga-duke</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>kugga-duke-league-api</module>
+        <module>kugga-duke-league-biz</module>
+    </modules>
+    <artifactId>kugga-duke-league</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        league 模块，公会业务。
+        例如说：公会创建、查询、修改等操作
+    </description>
+
+</project>

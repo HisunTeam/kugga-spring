@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.redis.config.KuggaRedisAutoConfiguration,\
+  com.hisun.kugga.framework.redis.config.KuggaCacheAutoConfiguration

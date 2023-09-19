@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.datapermission.config.KuggaDataPermissionAutoConfiguration,\
+  com.hisun.kugga.framework.datapermission.config.KuggaDeptDataPermissionAutoConfiguration

@@ -1,0 +1,26 @@
+package com.hisun.kugga.framework.banner.core;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+
+/**
+ * 项目启动成功后，提供文档相关的地址
+ *
+ * @author 芋道源码
+ */
+@Slf4j
+public class BannerApplicationRunner implements ApplicationRunner {
+
+    @Override
+    public void run(ApplicationArguments args) {
+//        ThreadUtil.execute(() -> {
+//            ThreadUtil.sleep(1, TimeUnit.SECONDS); // 延迟 1 秒，保证输出到结尾
+//            log.info("\n----------------------------------------------------------\n\t" +
+//                    "项目启动成功! \n\t" +
+//                    "----------------------------------------------------------\n\t"
+//            );
+//        });
+    }
+
+}

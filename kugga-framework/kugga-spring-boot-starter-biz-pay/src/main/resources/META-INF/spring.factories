@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.pay.config.KuggaPayAutoConfiguration,\
+  com.hisun.kugga.framework.pay.core.client.impl.wallet.config.WalletAutoConfiguration

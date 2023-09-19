@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.bos.dal.mysql.league.LeagueLabelMapper">
+
+    <!--
+    查询所有标签
+    过滤label_value为5的标签，该标签特殊使用（精选）
+    -->
+    <select id="getLeagueLabels"
+            resultType="com.hisun.kugga.duke.bos.controller.admin.league.vo.LeagueLabelVO">
+        select sort_id as sortId, label_value as labelValue, label_name as labelName
+        from duke_league_label
+        where display_flag = true
+          and label_value != '5'
+        order by sort_id, label_value asc
+    </select>
+
+
+</mapper>

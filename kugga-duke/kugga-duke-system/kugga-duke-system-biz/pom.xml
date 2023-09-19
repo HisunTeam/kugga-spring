@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hisun.boot</groupId>
+        <artifactId>kugga-duke-system</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>kugga-duke-system-biz</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        system 系统模块。
+        例如说：系统参数
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- s3文件上传 -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-file</artifactId>
+        </dependency>
+        <!-- 测试环境使用minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
+        <!-- 生产环境ucloud 对象存储 -->
+        <dependency>
+            <groupId>cn.ucloud.ufile</groupId>
+            <artifactId>ufile-client-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-biz-email</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-lock</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-system-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-user-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-forum-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-league-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-chat-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-protection</artifactId>
+        </dependency>
+
+        <!-- rocketmq -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-rocketmq</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

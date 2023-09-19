@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.league.dal.mysql.LeagueMemberMapper">
+    <select id="pageLeagueMembers"
+            resultType="com.hisun.kugga.duke.league.vo.LeagueMembersVO">
+        select t1.league_id  as leagueId,
+               t1.user_id    as userId,
+               t1.level      as level,
+               t1.growth_level as growthLevel,
+               t1.join_time  as joinTime,
+               t2.avatar     as avatar,
+               t2.username   as username,
+               t2.nickname   as nickname,
+               t2.last_name  as lastName,
+               t2.first_name as firstName
+        from duke_league_member t1
+                 inner join duke_user t2 on t1.user_id = t2.id and t2.deleted = '0'
+        where t1.league_id = #{reqVO.leagueId}
+          and t1.deleted = '0'
+        order by t1.level asc, t1.id asc
+    </select>
+
+    <!-- 查询用户ID,因为未完成创建的公会与完成的公会,不在一个表,所以需要union关联两张表,其次在“duke_league_unfinished”未完成表
+     的公会,一定为属于未激活公会(即:leagueActivationFlag=false),且一定为未认证的公会(leagueAuthFlag=false),而在正式公会表的
+     的公会,公会一定处于激活状态(即:leagueActivationFlag=true)-->
+    <select id="pageUserLeagues"
+            resultType="com.hisun.kugga.duke.league.vo.UserLeaguesVO">
+        select leagueId,
+        leagueName,
+        leagueAvatar,
+        leagueDesc,
+        createTime,
+        userLevel,
+        growthLevel,
+        peopleNumber,
+        leagueActivationFlag,
+        leagueAuthFlag
+        from(
+        select id as leagueId,
+        league_name as leagueName,
+        league_avatar as leagueAvatar,
+        league_desc as leagueDesc,
+        create_time as createTime,
+        0 userLevel,
+        0 growthLevel,
+        1 peopleNumber,
+        false leagueActivationFlag,
+        false leagueAuthFlag
+        from duke_league_unfinished t0 where user_id=#{userId}
+        and t0.activation_status = false
+        and t0.pre_status = true
+        and t0.deleted = false
+        union
+        select t2.id as leagueId,
+        t2.league_name as leagueName,
+        t2.league_avatar as leagueAvatar,
+        t2.league_desc as leagueDesc,
+        t2.create_time as createTime,
+        t1.level as userLevel,
+        t1.growth_level as growthLevel,
+        (select count(1) from duke_league_member p
+        right join duke_user us on p.user_id = us.id and us.deleted = '0'
+        where p.league_id = t2.id and p.deleted = '0'
+        ) peopleNumber,
+        true leagueActivationFlag,
+        t2.auth_flag as leagueAuthFlag
+        from duke_league_member t1
+        inner join duke_league t2 on t1.league_id=t2.id and t2.deleted = '0' where t1.user_id=#{userId} and t1.deleted =
+        '0'
+        ) userLeagues
+        <where>
+            <if test="authFlag != null">
+                and userLeagues.leagueAuthFlag = #{authFlag}
+            </if>
+        </where>
+        order by userLeagues.createTime desc
+    </select>
+
+    <select id="getLeagueAdminIds" resultType="java.lang.Long">
+        select league_id
+        from duke_league_member
+        where user_id = #{userId}
+          and level != #{level};
+    </select>
+
+    <select id="getMemberByLeagueIdAndUserId"
+            resultType="com.hisun.kugga.duke.league.dal.dataobject.LeagueMemberDO">
+        select *
+        from duke_league_member
+        where league_id = #{leagueId}
+          and user_id = #{userId}
+    </select>
+
+    <!--加入公会超过30天时间，最近30天有登录，成长值大于0-->
+    <select id="selectCanBonus" resultType="com.hisun.kugga.duke.league.dal.dataobject.BonusUserDO">
+        SELECT
+        dlm.user_id,
+        dlm.growth_value,
+        du.first_name,
+        du.last_name
+        FROM
+        duke_league_member dlm
+        LEFT JOIN duke_user du ON dlm.user_id = du.id
+        WHERE
+        dlm.league_id = #{leagueId}
+        AND dlm.deleted = 0
+        AND dlm.growth_value &gt; 0
+        AND dlm.join_time &lt; date_sub( now(), INTERVAL 30 DAY )
+        AND du.login_date &gt; date_sub( now(), INTERVAL 30 DAY )
+        ORDER BY
+            dlm.growth_value ASC
+    </select>
+
+    <update id="growthThenLevel">
+        UPDATE duke_league_member
+        SET growth_value = growth_value + #{growthDTO.growthValue},
+            update_time = #{time},
+        growth_level = (
+        CASE
+        WHEN (growth_value &lt; 10) THEN 0
+        WHEN (growth_value &gt;= 10 AND growth_value &lt;= 29) THEN 1
+        WHEN (growth_value &gt;= 30 AND growth_value &lt;= 59) THEN 2
+        WHEN (growth_value &gt;= 60 AND growth_value &lt;= 149) THEN 3
+        WHEN (growth_value &gt;= 150 AND growth_value &lt;= 399) THEN 4
+        WHEN (growth_value &gt;= 400 AND growth_value &lt;= 999) THEN 5
+        WHEN (growth_value &gt;= 1000 AND growth_value &lt;= 3499) THEN 6
+        WHEN (growth_value &gt;= 3500 AND growth_value &lt;= 7999) THEN 7
+        WHEN (growth_value &gt;= 8000 AND growth_value &lt;= 19999) THEN 8
+        WHEN (growth_value &gt;= 20000 AND growth_value &lt;= 49999) THEN 9
+        WHEN (growth_value &gt;= 50000) THEN 10
+        END)
+        WHERE league_id = #{growthDTO.leagueId}
+        AND user_id = #{growthDTO.userId}
+        AND deleted = 0
+    </update>
+</mapper>

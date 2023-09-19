@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.forum.dal.mysql.ForumMessageMapper">
+    <!-- 查询列表,根据创建时间排序 -->
+    <select id="pageListByUserId"
+            resultType="com.hisun.kugga.duke.forum.vo.MessageVO">
+        select t1.id as messageId,
+        t1.posts_id as replyPostsId,
+        t1.floor_id as replyFloorId,
+        t1.reply_id as replyId,
+        t1.reply_msg_id as replyMsgId,
+        t1.receive_id as receiveId,
+        t1.receive_msg_type as receiveMsgType,
+        t1.create_time as createTime,
+        t1.read_flag as readFlag,
+        t1.create_time as createTime,
+        t1.reply_user_id as replyUserId,
+        t2.avatar as replyAvatar,
+        t2.username as replyUserName,
+        t2.nickname as replyNickName,
+        t2.last_name as replyLastName,
+        t2.first_name as replyFirstName,
+        t1.user_id as receiveUserId,
+        t3.avatar as receiveAvatar,
+        t3.username as receiveUserName,
+        t3.nickname as receiveNickName,
+        t3.last_name as receiveLastName
+        from duke_forum_message t1
+        <!-- 查询回复人信息,即使用户已注销,也正常拿取用户信息,避免展示异常(物理删除还是有问题) -->
+        left join duke_user t2 on t1.reply_user_id = t2.id
+        <!-- 查询被回复人信息,即使用户已注销,也正常拿取用户信息,避免展示异常(物理删除还是有问题) -->
+        left join duke_user t3 on t1.user_id = t3.id
+        where t1.user_id = #{userId} and t1.deleted = false order by t1.create_time desc
+    </select>
+</mapper>

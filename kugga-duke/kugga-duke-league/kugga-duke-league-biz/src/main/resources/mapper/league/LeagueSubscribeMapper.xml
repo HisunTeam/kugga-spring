@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.league.dal.mysql.LeagueSubscribeMapper">
+
+
+    <!--
+       select sub.id id,
+       sub.league_id leagueId,
+       sub.subscribe_type subscribeType,
+       sub.expire_time expireTime,
+       sub.update_time updateTime,
+       sub.status status,
+       case subscribe_type
+           when 'month' then rule.subscribe_month_price
+           when 'quarter' then rule.subscribe_quarter_price
+           when 'year' then rule.subscribe_year_price
+           when 'forever' then rule.subscribe_forever_price
+           end as price,
+       l.league_name leagueName,
+       l.league_avatar leagueAvatar
+        from (select id,league_id,subscribe_type,expire_time,status,update_time
+              from duke_league_subscribe
+      where user_id = 50) sub
+         left join duke_league l on sub.league_id = l.id
+         left join duke_league_rule rule on sub.league_id = rule.league_id
+            order by sub.status desc,sub.update_time desc
+    -->
+    <select id="getSubscribePageByUserId"
+            resultType="com.hisun.kugga.duke.league.vo.subscribe.SubscribeRespVO">
+        select sub.id id,
+        sub.league_id leagueId,
+        sub.subscribe_type subscribeType,
+        sub.expire_time expireTime,
+        sub.update_time updateTime,
+        sub.status status,
+        sub.expire_status expireStatus,
+        case subscribe_type
+        when 'month' then rule.subscribe_month_price
+        when 'quarter' then rule.subscribe_quarter_price
+        when 'year' then rule.subscribe_year_price
+        when 'forever' then rule.subscribe_forever_price
+        end as price,
+        l.league_name leagueName,
+        l.league_avatar leagueAvatar
+        from (select id,league_id,subscribe_type,expire_time,status,expire_status,update_time
+        from duke_league_subscribe
+        where user_id = #{pageVO.userId} and subscribe_type != 'forever'
+        <if test="pageVO.expireStatus !=null">
+            and expire_status = #{pageVO.expireStatus}
+        </if>
+        ) sub
+        left join duke_league l on sub.league_id = l.id
+        left join duke_league_rule rule on sub.league_id = rule.league_id
+        order by sub.status desc,sub.update_time desc
+    </select>
+    <select id="getByLeagueIdAndUserId"
+            resultType="com.hisun.kugga.duke.league.dal.dataobject.LeagueSubscribeDO">
+        select *
+        from duke_league_subscribe
+        where league_id = #{leagueId}
+          and user_id = #{userId}
+    </select>
+</mapper>

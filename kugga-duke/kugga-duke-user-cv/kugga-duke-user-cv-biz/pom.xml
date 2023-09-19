@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hisun.boot</groupId>
+        <artifactId>kugga-duke-user-cv</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>kugga-duke-user-cv-biz</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        user-cv 推荐报告，个人简历模块。
+        例如说：推荐报告，个人简历创建、查询、修改
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!-- Web 相关 -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- DB 相关 -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-redis</artifactId>
+        </dependency>
+
+        <!-- Test 测试相关 -->
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-user-cv-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-duke-league-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-biz-operatelog</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hisun.boot</groupId>
+            <artifactId>kugga-spring-boot-starter-excel</artifactId>
+        </dependency>-->
+    </dependencies>
+
+</project>

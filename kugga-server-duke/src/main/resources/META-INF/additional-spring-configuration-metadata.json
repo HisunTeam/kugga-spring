@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "kugga.access-log.enable",
+      "type": "com.hisun.kugga.framework.apilog.config.KuggaApiLogAutoConfiguration",
+      "description": "Description for kugga.access-log.enable."
+    },
+    {
+      "name": "kugga.s3.enable",
+      "type": "com.hisun.kugga.duke.system.config.KuggaS3AutoConfiguration",
+      "description": "Description for kugga.s3.enable."
+    }
+  ]
+}

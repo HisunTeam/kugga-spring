@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.apilog.config.KuggaApiLogAutoConfiguration,\
+  com.hisun.kugga.framework.jackson.config.KuggaJacksonAutoConfiguration,\
+  com.hisun.kugga.framework.swagger.config.KuggaSwaggerAutoConfiguration,\
+  com.hisun.kugga.framework.web.config.KuggaWebAutoConfiguration

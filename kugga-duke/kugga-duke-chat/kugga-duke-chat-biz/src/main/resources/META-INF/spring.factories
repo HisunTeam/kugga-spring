@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.duke.chat.socket.configuration.AuthListenerConfiguration,\
+  com.hisun.kugga.duke.chat.socket.configuration.EventListenerConfiguration,\
+  com.hisun.kugga.duke.chat.socket.configuration.SessionConfiguration

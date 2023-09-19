@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.quartz.config.KuggaQuartzAutoConfiguration,\
+  com.hisun.kugga.framework.quartz.config.KuggaAsyncAutoConfiguration

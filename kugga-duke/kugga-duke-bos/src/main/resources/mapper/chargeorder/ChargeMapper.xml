@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.bos.dal.mysql.chargeorder.ChargeMapper">
+
+    <!--
+        一般情况下，尽可能使用 Mapper 进行 CRUD 增删改查即可。
+        无法满足的场景，例如说多表关联查询，才使用 XML 编写 SQL。
+        代码生成器暂时只生成 Mapper XML 文件本身，更多推荐 MybatisX 快速开发插件来生成查询。
+        文档可见：https://www.iocoder.cn/MyBatis/x-plugins/
+     -->
+
+
+    <select id="pageSelectOrders"
+            resultType="com.hisun.kugga.duke.bos.dal.dataobject.chargeorder.ChargeOrderDO">
+        select app_order_no,
+        create_time ,
+        amount ,
+        charge_channel ,
+        `status`
+        from duke_charge_order
+        <where>
+            <if test="beginCreateTime!=null and endCreateTime!=null">
+                and create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="appOrderNo!=null and appOrderNo!=''">
+                and app_order_no = #{appOrderNo}
+            </if>
+            <if test="status!=null and status!=''">
+                and status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+
+    </select>
+    <select id="pageSelectALlOrders"
+            resultType="com.hisun.kugga.duke.bos.dal.dataobject.chargeorder.ChargeOrderExtDO">
+        select app_order_no,
+        create_time ,
+        amount ,
+        chargeChannel,
+        status,
+        orderType from (
+        select t1.app_order_no,
+        t1.create_time ,
+        t1.amount ,
+        t1.withdraw_channel chargeChannel,
+        t1.status,
+        'withdraw' as orderType
+        from duke_withdraw_order t1
+        <where>
+            <if test="beginCreateTime!=null and endCreateTime!=null">
+                and t1.create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="appOrderNo!=null and appOrderNo!=''">
+                and t1.app_order_no = #{appOrderNo}
+            </if>
+            <if test="status!=null and status!=''">
+                and t1.status = #{status}
+            </if>
+        </where>
+        union all
+        select t2.app_order_no,
+        t2.create_time ,
+        t2.amount ,
+        t2.charge_channel chargeChannel,
+        t2.status,
+        'charge' as orderType
+        from duke_charge_order t2
+        <where>
+            <if test="beginCreateTime!=null and endCreateTime!=null">
+                and t2.create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="appOrderNo!=null and appOrderNo!=''">
+                and t2.app_order_no = #{appOrderNo}
+            </if>
+            <if test="status!=null and status!=''">
+                and t2.status = #{status}
+            </if>
+        </where>
+        ) t
+        <where>
+            <if test="orderType!=null and orderType!=''">
+                and orderType = #{orderType}
+            </if>
+        </where>
+        ORDER BY t.create_time DESC
+    </select>
+    <select id="listSelectOrders"
+            resultType="com.hisun.kugga.duke.bos.dal.dataobject.chargeorder.ChargeOrderExtDO">
+        select app_order_no,
+        create_time ,
+        amount ,
+        chargeChannel,
+        status,
+        orderType from (
+        select t1.app_order_no,
+        t1.create_time ,
+        t1.amount ,
+        t1.withdraw_channel chargeChannel,
+        t1.status,
+        'withdraw' as orderType
+        from duke_withdraw_order t1
+        <where>
+            <if test="beginCreateTime!=null and endCreateTime!=null">
+                and t1.create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="appOrderNo!=null and appOrderNo!=''">
+                and t1.app_order_no = #{appOrderNo}
+            </if>
+            <if test="status!=null and status!=''">
+                and t1.status = #{status}
+            </if>
+        </where>
+        union all
+        select t2.app_order_no,
+        t2.create_time ,
+        t2.amount ,
+        t2.charge_channel chargeChannel,
+        t2.status,
+        'charge' as orderType
+        from duke_charge_order t2
+        <where>
+            <if test="beginCreateTime!=null and endCreateTime!=null">
+                and t2.create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="appOrderNo!=null and appOrderNo!=''">
+                and t2.app_order_no = #{appOrderNo}
+            </if>
+            <if test="status!=null and status!=''">
+                and t2.status = #{status}
+            </if>
+        </where>
+        ) t
+        <where>
+            <if test="orderType!=null and orderType!=''">
+                and orderType = #{orderType}
+            </if>
+        </where>
+        ORDER BY t.create_time DESC
+    </select>
+</mapper>

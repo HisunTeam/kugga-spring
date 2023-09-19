@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.batch.dal.mysql.leaguesubscribe.LeagueSubscribeFlowMapper">
+
+    <!--
+    select * from duke_league_subscribe_flow
+    where subscribe_id = 1
+      and subscribe_time = '2022-10-24'
+    order by id desc
+    limit 1;
+    -->
+    <!-- 在失败的情况下可能存在多条，默认取倒数第一条就好 -->
+    <select id="selectExistFlow"
+            resultType="com.hisun.kugga.duke.batch.dal.dataobject.leaguesubscribe.LeagueSubscribeFlowDO">
+        select *
+        from duke_league_subscribe_flow
+        where subscribe_id = #{subscribe.id}
+          and subscribe_time like concat(#{expireTime}, '%')
+        order by id desc
+        limit 1;
+    </select>
+</mapper>

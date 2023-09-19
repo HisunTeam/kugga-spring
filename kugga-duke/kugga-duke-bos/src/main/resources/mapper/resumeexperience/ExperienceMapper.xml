@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.bos.dal.mysql.resumeexperience.ExperienceMapper">
+
+    <select id="getResumeExperiencePage"
+            resultType="com.hisun.kugga.duke.bos.dal.dataobject.resumeexperience.ResumeExperienceExDO">
+        select dre.id,
+        dr.resume_name,
+        dre.begin_time,
+        dre.end_time,
+        dre.school,
+        dre.degree,
+        dre.major,
+        dre.company,
+        dre.position,
+        dre.cert_flag,
+        dre.certification,
+        dre.remark,
+        dre.suggestion
+        from duke_resume_experience dre
+        left join duke_resume dr on dre.resume_id = dr.id
+        <where>
+            <if test="resumeName!=null and resumeName!=''">
+                and dr.resume_name like CONCAT(CONCAT('%', #{resumeName}), '%')
+            </if>
+            <if test="certFlag!=null and certFlag!=''">
+                and dre.cert_flag = #{certFlag}
+            </if>
+            <if test="school!=null and school!=''">
+                and dre.school like CONCAT(CONCAT('%', #{school}), '%')
+            </if>
+            <if test="company!=null and company!=''">
+                and dre.company like CONCAT(CONCAT('%', #{company}), '%')
+            </if>
+            and dre.type = #{type}
+            and dre.cert_flag is not null
+            and !(dre.deleted = true and dre.cert_flag = '0')
+        </where>
+        ORDER BY dre.create_time DESC, dre.id DESC
+    </select>
+</mapper>

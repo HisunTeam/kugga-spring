@@ -1,0 +1,101 @@
+package com.hisun.kugga.duke.batch.job.payorder;
+
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.hisun.kugga.duke.batch.bo.BillBO;
+import com.hisun.kugga.duke.batch.channel.wallet.WalletClient;
+import com.hisun.kugga.duke.batch.channel.wallet.dto.PayDetailReqBody;
+import com.hisun.kugga.duke.batch.channel.wallet.dto.PayDetailRspBody;
+import com.hisun.kugga.duke.batch.dal.dataobject.leaguebill.LeagueBillDO;
+import com.hisun.kugga.duke.batch.dal.dataobject.payorder.PayOrderDO;
+import com.hisun.kugga.duke.batch.dal.dataobject.userbill.UserBillDO;
+import com.hisun.kugga.duke.batch.dal.mysql.payorder.PayOrderMapper;
+import com.hisun.kugga.duke.batch.service.BillService;
+import com.hisun.kugga.duke.batch.service.LeagueBillService;
+import com.hisun.kugga.duke.batch.service.UserBillService;
+import com.hisun.kugga.duke.common.CommonConstants;
+import com.hisun.kugga.duke.enums.AccountType;
+import com.hisun.kugga.duke.enums.PayOrderStatus;
+import com.hisun.kugga.framework.common.exception.enums.GlobalErrorCodeConstants;
+import com.hisun.kugga.framework.quartz.core.handler.JobHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.cursor.Cursor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.Iterator;
+
+import static com.hisun.kugga.duke.common.CommonConstants.SNOWFLAKE;
+import static com.hisun.kugga.duke.common.CommonConstants.WalletStatus.*;
+
+/**
+ * 支付订单结果定时轮询
+ *
+ * @author: zhou_xiong
+ */
+@Slf4j
+@Component
+public class PayOrderStatusJob implements JobHandler {
+    @Resource
+    private WalletClient walletClient;
+    @Resource
+    private UserBillService userBillService;
+    @Resource
+    private LeagueBillService leagueBillService;
+    @Resource
+    private PayOrderMapper payOrderMapper;
+    @Resource
+    private BillService billService;
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public String execute(String param) throws Exception {
+        // 游标查询数据库中所有初始化状态充值订单号
+        Cursor<PayOrderDO> selectCursor = payOrderMapper.selectPrepayOrders();
+        try {
+            Iterator<PayOrderDO> iterator = selectCursor.iterator();
+            while (iterator.hasNext()) {
+                PayOrderDO payOrderDO = iterator.next();
+                // 查询支付详情
+                PayDetailRspBody payDetailRspBody = walletClient.payDetail(new PayDetailReqBody().setOrderNo(payOrderDO.getWalletOrderNo()));
+                // 修改支付订单状态
+                if (StrUtil.equalsAny(payDetailRspBody.getStatus(), SUCCESS, FAILED, CLOSED)) {
+                    payOrderMapper.update(null, new LambdaUpdateWrapper<PayOrderDO>()
+                            .set(PayOrderDO::getStatus, statusEscape(payDetailRspBody.getStatus()))
+                            .eq(PayOrderDO::getAppOrderNo, payOrderDO.getAppOrderNo()));
+                }
+                // 支付成功后生成用户账单
+                if (StrUtil.equals(payDetailRspBody.getStatus(), SUCCESS)) {
+                    BillBO billBO = new BillBO()
+                            .setAccountType(payOrderDO.getAccountType())
+                            .setWalletOrderNo(payOrderDO.getWalletOrderNo())
+                            .setObjectId(payOrderDO.getPayerId())
+                            .setAmount(payOrderDO.getPayAmount().negate())
+                            .setRemark(payOrderDO.getOrderType().getDesc());
+                    billService.saveBillByAccountType(billBO);
+                }
+            }
+        } catch (Exception e) {
+            log.error("PayOrderStatusJob.execute() error", e);
+            throw e;
+        } finally {
+            selectCursor.close();
+        }
+        return GlobalErrorCodeConstants.SUCCESS.getMsg();
+    }
+
+    private PayOrderStatus statusEscape(String status) {
+        switch (status) {
+            case SUCCESS:
+                return PayOrderStatus.PAY_SUCCESS;
+            case FAILED:
+                return PayOrderStatus.PAY_FAILED;
+            case CLOSED:
+                return PayOrderStatus.CLOSED;
+            default:
+                return PayOrderStatus.PREPAY;
+        }
+    }
+}

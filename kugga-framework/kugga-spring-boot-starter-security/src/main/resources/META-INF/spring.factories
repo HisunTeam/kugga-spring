@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.security.config.KuggaSecurityAutoConfiguration,\
+  com.hisun.kugga.framework.security.config.KuggaWebSecurityConfigurerAdapter

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.forum.dal.mysql.PostsFloorMapper">
+    <sql id="floor_msg">
+        t1.id as floorId,
+        t1.msg_id as msgId,
+        t1.posts_id as postsId,
+        t1.create_time as createTime,
+        t1.update_time as updateTime,
+        t1.floor_num as floorNum,
+        t1.praise_num as praiseNum,
+        t1.trample_num as trampleNum,
+        t1.hot_num as hotNum,
+        t1.user_id as userId,
+        t1.landlord_flag as landlordFlag,
+        t2.avatar as avatar,
+        t2.username as userName,
+        t2.nickname as nickName,
+        t2.last_name as lastName,
+        t2.first_name as firstName,
+        false as belongToFlag
+    </sql>
+    <!-- 查询列表,根据创建时间正序排序 -->
+    <select id="pageFloorAsc"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsFloorVO">
+        select
+        <include refid="floor_msg"/>
+        from duke_posts_floor t1
+        left join duke_user t2 on t1.user_id=t2.id
+        where t1.posts_id = #{postsId} and t1.deleted = '0' order by t1.id asc
+    </select>
+
+    <!-- 查询列表,根据创建时间倒序排序 -->
+    <select id="pageFloorDesc"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsFloorVO">
+        select
+        <include refid="floor_msg"/>
+        from duke_posts_floor t1
+        left join duke_user t2 on t1.user_id=t2.id
+        where t1.posts_id = #{postsId} and t1.deleted = '0' order by t1.id desc
+    </select>
+
+    <!-- 查询指定楼层,根据楼层ID -->
+    <select id="floor"
+            resultType="com.hisun.kugga.duke.forum.vo.PostsFloorVO">
+        select
+        <include refid="floor_msg"/>
+        from duke_posts_floor t1
+        left join duke_user t2 on t1.user_id=t2.id
+        where t1.id = #{id} and t1.deleted = '0'
+    </select>
+</mapper>

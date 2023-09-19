@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Socketio chat</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/socket.io/2.4.0/socket.io.min.js"></script>
+</head>
+<body>
+<h1>Netty-socketio chat demo</h1>
+<br/>
+<div id="console" class="well"></div>
+<form class="well form-inline" onsubmit="return false;">
+    <div>服务器默认地址：ws://localhost:10065 开发环境：ws://10.9.50.104:10065</div>
+    <input id="server" class="input-xlarge" type="text" placeholder="ws://localhost:10065"/>
+
+    <div>请填写用户token：da99fbe8484b425bacfd8f0160edbf37</div>
+    <input id="token" class="input-xlarge" type="text" placeholder="token. . . "/>
+    <button type="button" onClick="connect()" class="btn">0.connect</button>
+
+    <div>发给谁（输入userId）：</div>
+    <input id="receiveUserId" class="input-xlarge" type="text" placeholder="receiveUserId. . . "/>
+    <button type="button" onClick="requestChat()" class="btn">1.request_chat</button>
+
+    <div>发送房间（返回roomId）：</div>
+    <input id="room" class="input-xlarge" type="text" disabled="disabled" placeholder="room. . . "/>
+    <button type="button" onClick="beforeMessage()" class="btn">2.before_message</button>
+
+    <div>发送消息Token（返回messageToken）：</div>
+    <input id="messageToken" class="input-xlarge" type="text" disabled="disabled" placeholder="messageToken. . . "/>
+
+    <div>发送内容：</div>
+    <input id="content" class="input-xlarge" type="text" placeholder="content. . . "/>
+    <button type="button" onClick="sendMessage()" class="btn">SendMessage</button>
+</form>
+<form>
+    <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
+</form>
+</body>
+<script type="text/javascript">
+
+    $("#server").val('ws://localhost:10065');
+
+    let socket
+
+    function connect() {
+        if (socket !== undefined) {
+            socket.disconnect()
+        }
+
+        var server = $("#server").val();
+        var token = $("#token").val();
+        socket = io.connect(server,
+            // socket = io.connect('ws://10.9.50.104:10065',
+            {
+                query: {
+                    token: token
+                }
+            });
+
+        socket.on('connect', function () {
+            console.log(111111);
+            output('<span class="connect-msg">Client has connected to the server!</span>');
+        });
+
+        //服务器返回
+        socket.on('request_chat', function (data) {
+            console.log(data)
+            output('<span class="connect-msg">' + "request_chat返回：" + JSON.stringify(data) + '</span>');
+            $("#room").val(data.data.roomId);
+        });
+        socket.on('before_message', function (data) {
+            console.log(data)
+            output('<span class="connect-msg">' + "服务器返回：" + JSON.stringify(data) + '</span>');
+            $("#messageToken").val(data.data.messageToken);
+        });
+        socket.on('message', function (data) {
+            console.log(data)
+            output('<span class="username-msg">' + "服务器返回：" + JSON.stringify(data) + '</span>');
+        });
+        socket.on('disconnect', function () {
+            output('<span class="disconnect-msg">The client has disconnected! </span>');
+        });
+        socket.on('init', function (data) {
+            console.log(data)
+            output('<span class="connect-msg">' + "用户连接成功：" + JSON.stringify(data) + '</span>');
+        });
+    }
+
+    function sendDisconnect() {
+        socket.disconnect();
+    }
+
+    function requestChat() {
+        var receiveUserId = $("#receiveUserId").val();
+        // 发起聊天前先获取用户关系
+        // 从工会入口发起聊天需要携带工会编号
+        socket.emit('request_chat', {
+            leagueId: 1,
+            receiveUserId: receiveUserId
+        })
+    }
+
+    function beforeMessage() {
+        var room = $("#room").val();
+        // 聊天发起前需要获取聊天认证消息
+        socket.emit('before_message', {
+            roomId: room
+        })
+    }
+
+    function sendMessage() {
+
+        var content = $('#content').val();
+        output('<span class="username-msg">' + "说：" + content + '</span>');
+
+        var messageToken = $('#messageToken').val();
+
+        socket.emit('message', {
+            tempId: "341cvnk23n123",
+            messageToken: messageToken,
+            data: {
+                content: content
+            }
+        });
+    }
+
+    function output(message) {
+        var currentTime = "<span class='time' >" + new Date() + "</span>";
+        var element = $("<div>" + currentTime + " " + message + "</div>");
+        $('#console').prepend(element);
+    }
+</script>
+<style>
+    body {
+        padding: 20px;
+    }
+
+    #console {
+        height: 400px;
+        overflow: auto;
+        border: 1px solid #ccc;
+    }
+
+    .username-msg {
+        color: orange;
+    }
+
+    .connect-msg {
+        color: green;
+    }
+
+    .disconnect-msg {
+        color: red;
+    }
+
+    .send-msg {
+        color: #888
+    }
+</style>
+</html>

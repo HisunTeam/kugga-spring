@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.batch.dal.mysql.leaguesubscribe.LeagueSubscribeMapper">
+    <delete id="deleteLeagueMember">
+        update duke_league_member
+        set deleted   = true,
+            quit_time = #{quitTime}
+        where league_id = #{leagueId}
+          and user_id = #{userId}
+          and deleted = false
+    </delete>
+
+    <!--
+        select case 'quarter'
+           when 'month' then subscribe_month_price
+           when 'quarter' then subscribe_quarter_price
+           when 'year' then subscribe_year_price
+           when 'forever' then subscribe_forever_price
+           end as price
+        from duke_league_rule
+        where league_id = 1
+     -->
+
+    <select id="getPriceByLeagueIdAndType" resultType="java.math.BigDecimal">
+        select case #{subscribeType}
+                   when 'month' then subscribe_month_price
+                   when 'quarter' then subscribe_quarter_price
+                   when 'year' then subscribe_year_price
+                   when 'forever' then subscribe_forever_price
+                   end as price
+        from duke_league_rule
+        where league_id = #{leagueId}
+    </select>
+
+    <!--
+    explain select sub.id id,
+       sub.league_id leagueId,
+       sub.user_id userId,
+       sub.subscribe_type subscribeType,
+       sub.expire_time expireTime,
+       sub.status status,
+       case subscribe_type
+           when 'month' then rule.subscribe_month_price
+           when 'quarter' then rule.subscribe_quarter_price
+           when 'year' then rule.subscribe_year_price
+           when 'forever' then rule.subscribe_forever_price
+           end as price
+    from (select id,league_id,user_id,subscribe_type,expire_time,status
+          from duke_league_subscribe
+          where  expire_time = '2022-11-23' and status = true and deleted = false ) sub
+             left join duke_league_rule rule on sub.league_id = rule.league_id
+    -->
+    <select id="selectSubscribes"
+            resultType="com.hisun.kugga.duke.batch.dal.dataobject.leaguesubscribe.LeagueSubscribeDO">
+        select sub.id             id,
+               sub.league_id      leagueId,
+               sub.user_id        userId,
+               sub.subscribe_type subscribeType,
+               sub.expire_time    expireTime,
+               sub.status         status,
+               case subscribe_type
+                   when 'month' then rule.subscribe_month_price
+                   when 'quarter' then rule.subscribe_quarter_price
+                   when 'year' then rule.subscribe_year_price
+                   when 'forever' then rule.subscribe_forever_price
+                   end as         price
+        from (select id, league_id, user_id, subscribe_type, expire_time, status
+              from duke_league_subscribe
+              where expire_time like concat(#{expireTime}, '%')
+                and status = #{status}
+                and expire_status = #{expireStatus}
+                and deleted = false
+             ) sub
+                 left join duke_league_rule rule on sub.league_id = rule.league_id
+    </select>
+
+    <!--
+    select sub.id id,
+       sub.league_id leagueId,
+       sub.user_id userId,
+       sub.subscribe_type subscribeType,
+       sub.expire_time expireTime,
+       sub.status status,
+       case subscribe_type
+           when 'month' then rule.subscribe_month_price
+           when 'quarter' then rule.subscribe_quarter_price
+           when 'year' then rule.subscribe_year_price
+           when 'forever' then rule.subscribe_forever_price
+           end as price,
+       u.email email
+    from (select id,league_id,user_id,subscribe_type,expire_time,status
+          from duke_league_subscribe
+          where  expire_time like '2022-11-23%' and status = true and deleted = false ) sub
+             left join duke_league_rule rule on sub.league_id = rule.league_id
+             left join duke_user u on sub.user_id = u.id
+    -->
+    <select id="selectSubscribes2"
+            resultType="com.hisun.kugga.duke.batch.dal.dataobject.leaguesubscribe.LeagueSubscribeDO">
+        select sub.id             id,
+               sub.league_id      leagueId,
+               sub.user_id        userId,
+               sub.subscribe_type subscribeType,
+               sub.expire_time    expireTime,
+               sub.status         status,
+               case subscribe_type
+                   when 'month' then rule.subscribe_month_price
+                   when 'quarter' then rule.subscribe_quarter_price
+                   when 'year' then rule.subscribe_year_price
+                   when 'forever' then rule.subscribe_forever_price
+                   end as         price,
+               u.email            email,
+               l.league_name      leagueName
+        from (select id, league_id, user_id, subscribe_type, expire_time, status
+              from duke_league_subscribe
+              where expire_time like concat(#{expireTime}, '%')
+                and status = #{status}
+                and deleted = false) sub
+                 left join duke_league_rule rule on sub.league_id = rule.league_id
+                 left join duke_user u on sub.user_id = u.id
+                 left join duke_league l on sub.league_id = l.id
+    </select>
+
+</mapper>

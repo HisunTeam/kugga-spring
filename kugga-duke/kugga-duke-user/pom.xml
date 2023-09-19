@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hisun.boot</groupId>
+        <artifactId>kugga-duke</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>kugga-duke-user</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>kugga-duke-user-api</module>
+        <module>kugga-duke-user-biz</module>
+    </modules>
+
+    <name>${project.artifactId}</name>
+    <description>
+        user 模块，主要实现 用户登录、注册、个人中心 等功能。
+    </description>
+
+
+</project>

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.tracer.config.KuggaTracerAutoConfiguration,\
+  com.hisun.kugga.framework.tracer.config.KuggaMetricsAutoConfiguration

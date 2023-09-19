@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.datasource.config.KuggaDataSourceAutoConfiguration,\
+  com.hisun.kugga.framework.mybatis.config.KuggaMybatisAutoConfiguration
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  com.hisun.kugga.framework.mybatis.config.IdTypeEnvironmentPostProcessor

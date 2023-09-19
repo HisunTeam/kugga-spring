@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.forum.dal.mysql.ForumPlateMapper">
+    <!-- 查询列表,根据创建时间排序 -->
+    <select id="selectLeague"
+            resultType="com.hisun.kugga.duke.forum.vo.SimplePlateVO">
+        select t1.league_name            as plateName,
+               t1.league_avatar          as plateAvatar,
+               t2.user_join_price        as userJoinPrice,
+               t2.enabled_admin_approval as enabledAdminApproval,
+               t2.enabled_user_join      as enabledUserJoin
+        from duke_league t1
+                 left join duke_league_rule t2 on t1.id = t2.league_id
+        where t1.id = #{leagueId}
+          and t1.deleted = false
+    </select>
+</mapper>

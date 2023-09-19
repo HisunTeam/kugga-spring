@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.duke.system.config.KuggaS3AutoConfiguration,\
+  com.hisun.kugga.duke.system.service.messages.configuration.MessageConfiguration

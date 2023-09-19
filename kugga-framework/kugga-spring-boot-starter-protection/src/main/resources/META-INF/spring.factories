@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hisun.kugga.framework.idempotent.config.KuggaIdempotentConfiguration,\
+  com.hisun.kugga.framework.lock4j.config.KuggaLock4jConfiguration

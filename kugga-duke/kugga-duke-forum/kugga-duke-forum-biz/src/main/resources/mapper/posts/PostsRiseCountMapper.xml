@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.forum.dal.mysql.PostsRiseCountMapper">
+    <!-- 查询XXX时间内 热度上升最快的5个贴子 涉及条件 公会开通了申请加入 公会开通了热贴扫描 贴子开通了热贴扫描 -->
+    <select id="riseHotPosts"
+            resultType="com.hisun.kugga.duke.forum.vo.HotPostsVO">
+        select t1.id          as postsId,
+               t1.msg_id      as msgId,
+               t1.plate       as plate,
+               t1.group_id    as groupId,
+               t1.posts_title as postsTitle,
+               t1.posts_title    postsTitle,
+               t1.create_time as createTime,
+               t1.update_time as updateTime,
+               t1.reply_time  as replyTime,
+               t1.floor_count as floorCount,
+               t1.praise_num  as praiseNum,
+               t1.trample_num as trampleNum,
+               t1.click_num   as clickNum,
+               t1.collect_num as collectNum,
+               t1.share_num   as shareNum,
+               t1.hot_num     as hotNum,
+               t1.comment_num as commentNum,
+               t1.user_id     as userId,
+               t2.avatar      as avatar,
+               t2.username    as userName,
+               t2.nickname    as nickName,
+               t2.last_name   as lastName,
+               t2.first_name  as firstName
+        from (
+                 select t.posts_id,
+                        sum(t.num) totalNum
+                 from duke_posts_rise_count t
+                 where t.create_time between #{startTime} and #{endTime}
+                 group by t.posts_id) t0
+                 left join duke_posts t1 on t0.posts_id = t1.id
+                 left join duke_user t2 on t1.user_id = t2.id
+                 left join duke_league t3 on t1.group_id = t3.id
+                 left join duke_league_rule t4 on t1.group_id = t4.league_id
+        where t1.hot_search_switch = true
+          and t1.deleted = false
+          and t3.deleted = false
+          and t4.enabled_user_join = true
+          and t4.posts_search_switch = true
+        order by t0.totalNum desc
+        limit 5
+    </select>
+
+    <!-- 查询XXX时间内 热度上升最快的贴子子,可排除不需要的贴,可自定义查询条数 -->
+    <select id="riseHotPostsComplex"
+            resultType="com.hisun.kugga.duke.forum.vo.HotPostsVO">
+        select
+        t1.id as postsId,
+        t1.msg_id as msgId,
+        t1.plate as plate,
+        t1.group_id as groupId,
+        t1.posts_title as postsTitle,
+        t1.posts_title postsTitle,
+        t1.create_time as createTime,
+        t1.update_time as updateTime,
+        t1.reply_time as replyTime,
+        t1.floor_count as floorCount,
+        t1.praise_num as praiseNum,
+        t1.trample_num as trampleNum,
+        t1.click_num as clickNum,
+        t1.collect_num as collectNum,
+        t1.share_num as shareNum,
+        t1.hot_num as hotNum,
+        t1.comment_num as commentNum,
+        t1.user_id as userId,
+        t2.avatar as avatar,
+        t2.username as userName,
+        t2.nickname as nickName,
+        t2.last_name as lastName,
+        t2.first_name as firstName
+        from (
+        select t.posts_id,
+        sum(t.num) totalNum
+        from duke_posts_rise_count t
+        where t.create_time between #{startTime} and #{endTime}
+        <if test="item.size != 0">
+            and t.posts_id not in
+            <foreach collection="item" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by t.posts_id) t0
+        left join duke_posts t1 on t0.posts_id = t1.id
+        left join duke_user t2 on t1.user_id = t2.id
+        left join duke_league t3 on t1.group_id = t3.id
+        left join duke_league_rule t4 on t1.group_id = t4.league_id
+        where t1.hot_search_switch = true
+        and t1.deleted = false
+        and t3.deleted = false
+        and t4.enabled_user_join = true
+        and t4.posts_search_switch = true
+        order by t0.totalNum desc limit #{number}
+    </select>
+</mapper>

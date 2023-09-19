@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hisun.kugga.duke.bos.dal.mysql.league.LeagueMapper">
+
+    <!--
+    查询首页标签推荐公会
+    查询认证的公会auth_flag=true
+    给公会外部撰写推荐报告数量recommendations type=1推荐信 status=3 已完成 pay_type=1付费
+    -->
+    <select id="pageRecommends"
+            resultType="com.hisun.kugga.duke.bos.controller.admin.league.vo.LeagueRecommendsVO">
+        select t1.sort_id as sortId,
+        t1.id as leagueId,
+        t1.league_name as leagueName,
+        (select count(1) from duke_league_member me where t1.id = me.league_id) as members,
+        (select count(1) recommendations
+        from duke_league_notice n
+        left join duke_task_report o on n.id = o.notice_id
+        where n.league_id = t1.id and n.type = 1 and n.status = 3
+        and o.pay_type = 1) as recommendations,
+        t1.league_label as leagueLabel,
+        t1.create_time as createTime
+        from duke_league t1
+        <where>
+            t1.auth_flag = true and t1.league_label = #{leagueLabel}
+            <if test="leagueName!=null and leagueName!=''">
+                and t1.league_name like concat('%',#{leagueName},'%')
+            </if>
+        </where>
+        order by t1.sort_id asc, t1.create_time desc
+    </select>
+
+    <select id="pageLeagueDisplay"
+            resultType="com.hisun.kugga.duke.bos.controller.admin.league.vo.LeagueRecommendsVO">
+        select t1.sort_id as sortId,
+        t1.id as leagueId,
+        t1.league_name as leagueName,
+        (select count(1) from duke_league_member me where t1.id = me.league_id) as members,
+        (select count(1) recommendations
+        from duke_league_notice n
+        left join duke_task_report o on n.id = o.notice_id
+        where n.league_id = t1.id and n.type = 1 and n.status = 3
+        and o.pay_type = 1) as recommendations,
+        t1.league_label as leagueLabel,
+        t1.create_time as createTime,
+        t1.auth_flag as authFlag
+        from duke_league t1
+        <where>
+            <if test="authFlag!=null and authFlag!='' or authFlag == false">
+                and t1.auth_flag = #{authFlag}
+            </if>
+            <if test="leagueLabel!=null and leagueLabel!=''">
+                and t1.league_label = #{leagueLabel}
+            </if>
+            <if test="leagueName!=null and leagueName!=''">
+                and t1.league_name like concat('%',#{leagueName},'%')
+            </if>
+        </where>
+        order by t1.create_time desc
+    </select>
+
+
+</mapper>
