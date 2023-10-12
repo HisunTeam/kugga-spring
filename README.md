@@ -77,7 +77,7 @@ KuggaDuke可广泛应用于:
 
 ## 1、技术架构图
 
-![image-20230925150651965](https://doc.iocoder.cn/img/common/ruoyi-vue-pro-architecture.png)
+![image-20230925150651965](img/kugga-architecture.png)
 
 ## 2、技术栈
 
