@@ -2,71 +2,71 @@
 set -e
 
 DATE=$(date +%Y%m%d%H%M)
-# 基础路径
+# Basic Location
 BASE_PATH=/work/projects/kugga-server
-# 编译后 jar 的地址。部署时，Jenkins 会上传 jar 包到该目录下
+# The location of the compiled jar file. During deployment, Jenkins will upload the jar package to this directory.
 SOURCE_PATH=$BASE_PATH/build
-# 服务名称。同时约定部署服务的 jar 包名字也为它。
+# Service name. It's also agreed that the name of the jar package deployed is the same.
 SERVER_NAME=kugga-server
-# 环境
+# Environment
 PROFILES_ACTIVE=development
-# 健康检查 URL
+# Health check URL
 HEALTH_CHECK_URL=http://127.0.0.1:18080/actuator/health/
 
-# heapError 存放路径
+# Path for heapError
 HEAP_ERROR_PATH=$BASE_PATH/heapError
-# JVM 参数
+# JVM Parameters
 JAVA_OPS="-Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$HEAP_ERROR_PATH"
 
-# SkyWalking Agent 配置
+# SkyWalking Agent configuration
 #export SW_AGENT_NAME=$SERVER_NAME
 #export SW_AGENT_COLLECTOR_BACKEND_SERVICES=192.168.0.84:11800
 #export SW_GRPC_LOG_SERVER_HOST=192.168.0.84
 #export SW_AGENT_TRACE_IGNORE_PATH="Redisson/PING,/actuator/**,/admin/**"
 #export JAVA_AGENT=-javaagent:/work/skywalking/apache-skywalking-apm-bin/agent/skywalking-agent.jar
 
-# 备份
+# Backup
 function backup() {
-    # 如果不存在，则无需备份
+    # If it doesn't exist, no need to back up
     if [ ! -f "$BASE_PATH/$SERVER_NAME.jar" ]; then
-        echo "[backup] $BASE_PATH/$SERVER_NAME.jar 不存在，跳过备份"
-    # 如果存在，则备份到 backup 目录下，使用时间作为后缀
+        echo "[backup] $BASE_PATH/$SERVER_NAME.jar does not exist, skipping backup"
+    # If it exists, back it up to the backup directory, using time as the suffix
     else
-        echo "[backup] 开始备份 $SERVER_NAME ..."
+        echo "[backup] Starting backup $SERVER_NAME ..."
         cp $BASE_PATH/$SERVER_NAME.jar $BASE_PATH/backup/$SERVER_NAME-$DATE.jar
-        echo "[backup] 备份 $SERVER_NAME 完成"
+        echo "[backup] Backup $SERVER_NAME completed"
     fi
 }
 
-# 最新构建代码 移动到项目环境
+# Move the latest built code to the project environment
 function transfer() {
-    echo "[transfer] 开始转移 $SERVER_NAME.jar"
+    echo "[transfer] Starting to transfer $SERVER_NAME.jar"
 
-    # 删除原 jar 包
+    # Delete the original jar package
     if [ ! -f "$BASE_PATH/$SERVER_NAME.jar" ]; then
-        echo "[transfer] $BASE_PATH/$SERVER_NAME.jar 不存在，跳过删除"
+        echo "[transfer] $BASE_PATH/$SERVER_NAME.jar does not exist, skipping deletion"
     else
-        echo "[transfer] 移除 $BASE_PATH/$SERVER_NAME.jar 完成"
+        echo "[transfer] Removal of $BASE_PATH/$SERVER_NAME.jar completed"
         rm $BASE_PATH/$SERVER_NAME.jar
     fi
 
-    # 复制新 jar 包
-    echo "[transfer] 从 $SOURCE_PATH 中获取 $SERVER_NAME.jar 并迁移至 $BASE_PATH ...."
+    # Copy new jar package
+    echo "[transfer] Fetching $SERVER_NAME.jar from $SOURCE_PATH and moving to $BASE_PATH ...."
     cp $SOURCE_PATH/$SERVER_NAME.jar $BASE_PATH
 
-    echo "[transfer] 转移 $SERVER_NAME.jar 完成"
+    echo "[transfer] Transfer of $SERVER_NAME.jar completed"
 }
 
-# 停止：优雅关闭之前已经启动的服务
+# Stop: Gracefully shut down the service that was previously started
 function stop() {
-    echo "[stop] 开始停止 $BASE_PATH/$SERVER_NAME"
+    echo "[stop] Starting to stop $BASE_PATH/$SERVER_NAME"
     PID=$(ps -ef | grep $BASE_PATH/$SERVER_NAME | grep -v "grep" | awk '{print $2}')
-    # 如果 Java 服务启动中，则进行关闭
+    # If Java service is running, then shut it down
     if [ -n "$PID" ]; then
-        # 正常关闭
-        echo "[stop] $BASE_PATH/$SERVER_NAME 运行中，开始 kill [$PID]"
+        # Normal shutdown
+        echo "[stop] $BASE_PATH/$SERVER_NAME is running, start to kill [$PID]"
         kill -15 $PID
-        # 等待最大 120 秒，直到关闭完成。
+        # Wait up to 120 seconds until shutdown is complete.
         for ((i = 0; i < 120; i++))
             do
                 sleep 1
@@ -74,86 +74,86 @@ function stop() {
                 if [ -n "$PID" ]; then
                     echo -e ".\c"
                 else
-                    echo '[stop] 停止 $BASE_PATH/$SERVER_NAME 成功'
+                    echo '[stop] Stopping $BASE_PATH/$SERVER_NAME successful'
                     break
                 fi
-		    done
+            done
 
-        # 如果正常关闭失败，那么进行强制 kill -9 进行关闭
+        # If normal shutdown fails, then forcefully kill -9 to shut down
         if [ -n "$PID" ]; then
-            echo "[stop] $BASE_PATH/$SERVER_NAME 失败，强制 kill -9 $PID"
+            echo "[stop] $BASE_PATH/$SERVER_NAME failed, force kill -9 $PID"
             kill -9 $PID
         fi
-    # 如果 Java 服务未启动，则无需关闭
+    # If Java service is not running, no need to shut down
     else
-        echo "[stop] $BASE_PATH/$SERVER_NAME 未启动，无需停止"
+        echo "[stop] $BASE_PATH/$SERVER_NAME is not running, no need to stop"
     fi
 }
 
-# 启动：启动后端项目
+# Start: Start the backend project
 function start() {
-    # 开启启动前，打印启动参数
-    echo "[start] 开始启动 $BASE_PATH/$SERVER_NAME"
+    # Before starting, print start parameters
+    echo "[start] Starting $BASE_PATH/$SERVER_NAME"
     echo "[start] JAVA_OPS: $JAVA_OPS"
     echo "[start] JAVA_AGENT: $JAVA_AGENT"
     echo "[start] PROFILES: $PROFILES_ACTIVE"
 
-    # 开始启动
+    # Start
     BUILD_ID=dontKillMe nohup java -server $JAVA_OPS $JAVA_AGENT -jar $BASE_PATH/$SERVER_NAME.jar --spring.profiles.active=$PROFILES_ACTIVE &
-    echo "[start] 启动 $BASE_PATH/$SERVER_NAME 完成"
+    echo "[start] Starting $BASE_PATH/$SERVER_NAME completed"
 }
 
-# 健康检查：自动判断后端项目是否正常启动
+# Health check: Automatically determine whether the backend project has started normally
 function healthCheck() {
-    # 如果配置健康检查，则进行健康检查
+    # If health check is configured, then do health check
     if [ -n "$HEALTH_CHECK_URL" ]; then
-        # 健康检查最大 120 秒，直到健康检查通过
-        echo "[healthCheck] 开始通过 $HEALTH_CHECK_URL 地址，进行健康检查";
+        # Health check up to 120 seconds, until health check passes
+        echo "[healthCheck] Starting health check through $HEALTH_CHECK_URL";
         for ((i = 0; i < 120; i++))
             do
-                # 请求健康检查地址，只获取状态码。
+                # Request health check URL, only get status code.
                 result=`curl -I -m 10 -o /dev/null -s -w %{http_code} $HEALTH_CHECK_URL || echo "000"`
-                # 如果状态码为 200，则说明健康检查通过
+                # If status code is 200, then health check is passed
                 if [ "$result" == "200" ]; then
-                    echo "[healthCheck] 健康检查通过";
+                    echo "[healthCheck] Health check passed";
                     break
-                # 如果状态码非 200，则说明未通过。sleep 1 秒后，继续重试
+                # If status code is not 200, then it's not passed. sleep 1 second, then retry
                 else
                     echo -e ".\c"
                     sleep 1
                 fi
             done
 
-        # 健康检查未通过，则异常退出 shell 脚本，不继续部署。
+        # If health check is not passed, then exit shell script abnormally, do not continue deployment.
         if [ ! "$result" == "200" ]; then
-            echo "[healthCheck] 健康检查不通过，可能部署失败。查看日志，自行判断是否启动成功";
+            echo "[healthCheck] Health check failed, deployment might have failed. Check the logs to determine if it started successfully";
             tail -n 10 nohup.out
             exit 1;
-        # 健康检查通过，打印最后 10 行日志，可能部署的人想看下日志。
+        # If health check is passed, print last 10 lines of logs, maybe the deployer wants to see the logs.
         else
             tail -n 10 nohup.out
         fi
-    # 如果未配置健康检查，则 sleep 120 秒，人工看日志是否部署成功。
+    # If health check is not configured, then sleep 120 seconds, manually check logs to see if deployment is successful.
     else
-        echo "[healthCheck] HEALTH_CHECK_URL 未配置，开始 sleep 120 秒";
+        echo "[healthCheck] HEALTH_CHECK_URL not set, starting sleep for 120 seconds";
         sleep 120
-        echo "[healthCheck] sleep 120 秒完成，查看日志，自行判断是否启动成功";
+        echo "[healthCheck] Finished sleeping for 120 seconds, check logs to determine if it started successfully";
         tail -n 50 nohup.out
     fi
 }
 
-# 部署
+# Deploy
 function deploy() {
     cd $BASE_PATH
-    # 备份原 jar
+    # Backup original jar
     backup
-    # 停止 Java 服务
+    # Stop Java service
     stop
-    # 部署新 jar
+    # Deploy new jar
     transfer
-    # 启动 Java 服务
+    # Start Java service
     start
-    # 健康检查
+    # Health check
     healthCheck
 }
 
