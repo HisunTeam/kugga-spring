@@ -13,7 +13,7 @@ public class AllocationResultRspBody {
 
     private List<Receiver> receiverList;
     /**
-     * 分账记录编号
+     * Transaction Record Number
      */
     private String sharingNo;
 }
