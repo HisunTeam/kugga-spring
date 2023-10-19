@@ -8,11 +8,11 @@ import lombok.Data;
 @Data
 public class DrawbackApplyRspBody {
     /**
-     * 退款状态
+     * Refund Status
      */
     private String drawbackStatus;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
     private String orderNo;
 }

@@ -12,27 +12,27 @@ import javax.validation.constraints.NotNull;
 @Data
 public class DrawbackApplyReqBody extends WalletBaseReqBody {
     /**
-     * 钱包账号
+     * Wallet account
      */
     @NotEmpty(message = "account cannot be empty")
     private String account;
     /**
-     * 回调通知地址
+     * Callback notification URL
      */
     @NotEmpty(message = "callbackUrl cannot be empty")
     private String callbackUrl;
     /**
-     * 退款金额
+     * Refund amount
      */
     @NotNull(message = "drawbackAmount cannot be empty")
     private Integer drawbackAmount;
     /**
-     * 订单类型, 目前仅支持消费退款, 即pay类型
+     * Order type, currently only supports refund for consumption, i.e., 'pay' type
      */
     @NotEmpty(message = "orderType cannot be empty")
     private String orderType;
     /**
-     * 源订单号
+     * Source order number
      */
     @NotEmpty(message = "originalOrderNo cannot be empty")
     private String originalOrderNo;

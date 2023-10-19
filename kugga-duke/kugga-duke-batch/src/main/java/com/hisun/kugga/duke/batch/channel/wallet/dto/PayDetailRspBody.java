@@ -20,23 +20,23 @@ public class PayDetailRspBody {
     private String dealTime;
     private String fee;
     /**
-     * 钱包订单号
+     * Wallet order number
      */
     private String orderNo;
     /**
-     * 支付订单号
+     * Payment order number
      */
     private String payOrderNo;
     /**
-     * 支付流水号，使用第三方支付时为其返回的流水号
+     * Payment transaction number, provided by the third-party payment system
      */
     private String paySn;
     /**
-     * 支付方式: balance; paypal; bank_card ;
+     * Payment method: balance; paypal; bank_card;
      */
     private String payType;
     /**
-     * 交易状态： prepay 预支付；processing 处理中；success 已成功；failed 交易失败；closed 已关闭
+     * Transaction status: prepay (Prepayment); processing (Processing); success (Successful); failed (Transaction Failed); closed (Closed)
      */
     private String remark;
     private String status;

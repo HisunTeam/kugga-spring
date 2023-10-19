@@ -8,15 +8,15 @@ import lombok.Data;
 @Data
 public class Receiver {
     /**
-     * 分账金额
+     * Profit-sharing amount
      */
     private Integer profitSharingAmount;
     /**
-     * 分账接收方账户
+     * Profit-sharing receiver's account
      */
     private String profitSharingReceiver;
     /**
-     * 分账描述
+     * Profit-sharing description
      */
     private String remark;
 }

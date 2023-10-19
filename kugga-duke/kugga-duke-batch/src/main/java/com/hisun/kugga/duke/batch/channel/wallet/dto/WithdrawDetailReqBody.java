@@ -11,8 +11,9 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class WithdrawDetailReqBody extends WalletBaseReqBody {
     /**
-     * 钱包订单号
+     * Wallet order number
      */
     @NotEmpty(message = "orderNo cannot be empty")
     private String orderNo;
 }
+

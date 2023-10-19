@@ -13,7 +13,7 @@ public class ChargeDetailRspBody {
     private Integer fee;
     private String receivedTime;
     /**
-     * 交易状态： prepay 预支付；processing 处理中；success 已成功；failed 交易失败；closed 已关闭
+     * Transaction Status: prepay (Prepayment); processing (Processing); success (Successful); failed (Transaction Failed); closed (Closed)
      */
     private String status;
 }

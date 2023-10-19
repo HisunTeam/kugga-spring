@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class DrawbackDetailReqBody extends WalletBaseReqBody {
     /**
-     * 钱包的退款订单号
+     * Wallet Refund Order Number
      */
     @NotEmpty(message = "orderNo cannot be empty")
     private String orderNo;

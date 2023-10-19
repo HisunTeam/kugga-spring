@@ -8,19 +8,20 @@ import lombok.Data;
 @Data
 public class DrawbackDetailRspBody {
     /**
-     * 退款金额
+     * Refund amount
      */
     private Integer drawbackAmount;
     /**
-     * 退款发起时间
+     * Refund initiation time
      */
     private String startTime;
     /**
-     * 退款状态： draft 待分账；processing 处理中；partial_success 部分成功；full_success 已全部成功；failed 全部失败；
+     * Refund status: draft (Pending Allocation); processing (Processing); partial_success (Partial Success); full_success (All Successful); failed (All Failed);
      */
     private String status;
     /**
-     * 退款完成时间
+     * Refund completion time
      */
     private String successTime;
 }
+
