@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 站内信消息
+ * Inner message
  */
 @Data
 @Builder
@@ -15,57 +15,56 @@ import lombok.NoArgsConstructor;
 public class MessageBO {
 
     /**
-     *
+     * Message code
      */
     private String messageCode;
     /**
-     * 场景 (推荐信、聊天、认证、邀请加入公会、系统通知)
+     * Scene (Recommendation letter, chat, authentication, invitation to join a guild, system notification)
      */
     private String scene;
     /**
-     * 状态(邀请、回调)
+     * Status (invitation, callback)
      */
     private String type;
     /**
-     * 业务id (认证id、推荐信id..)
+     * Business ID (authentication ID, recommendation letter ID, etc.)
      */
     private Long businessId;
     /**
-     * 业务链接
+     * Business link
      */
     private String businessLink;
     /**
-     * 发起者
+     * Initiator
      */
     private Long initiatorId;
     /**
-     * 接收者
+     * Receiver
      */
     private Long receiverId;
     /**
-     * 发起者公会id
+     * Initiator guild ID
      */
     private Long initiatorLeagueId;
     /**
-     * 接收方公会id
+     * Receiver guild ID
      */
     private Long receiverLeagueId;
 
     /**
-     * 消息参数
+     * Message parameters
      */
     private String messageParam;
     /**
-     * 消息内容
+     * Message content
      */
     private String content;
     /**
-     * 已读状态(UR-未读 ,R-已读)
+     * Read status (UR - Unread, R - Read)
      */
     private String readFlag;
     /**
-     * 处理标志(ND-不处理 ,D-处理,AD-已处理)
+     * Processing flag (ND - Not processed, D - Processed, AD - Already processed)
      */
     private String dealFlag;
-
 }
