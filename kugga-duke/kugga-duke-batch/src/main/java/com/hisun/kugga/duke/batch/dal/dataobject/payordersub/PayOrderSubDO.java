@@ -12,12 +12,12 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 支付订单子集 DO
+ * Payment Order Subset DO
  *
  * @author 芋道源码
  */
 @TableName("duke_pay_order_sub")
-@KeySequence("duke_pay_order_sub_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_pay_order_sub_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -26,49 +26,48 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PayOrderSubDO extends BaseDO {
     /**
-     * 订单子集id
+     * Order Subset ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     private String appOrderNo;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
     private String walletOrderNo;
     /**
-     * 钱包分账记录编号
+     * Wallet Split Record Number
      */
     private String splitNo;
     /**
-     * 交易类型
+     * Transaction Type
      */
     private OrderType orderType;
     /**
-     * 收款方id
+     * Receiver ID
      */
     private Long receiverId;
     /**
-     * 收款方账户类型
+     * Receiver Account Type
      */
     private AccountType accountType;
     /**
-     * 收款方钱包账户
+     * Receiver Wallet Account
      */
     private String accountId;
     /**
-     * 收款金额
+     * Received Amount
      */
     private BigDecimal amount;
     /**
-     * 分账状态
+     * Split Status
      */
     private PayOrderSubStatus status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
-
 }

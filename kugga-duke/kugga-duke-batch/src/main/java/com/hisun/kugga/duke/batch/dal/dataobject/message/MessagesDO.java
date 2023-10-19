@@ -6,7 +6,7 @@ import com.hisun.kugga.framework.mybatis.core.dataobject.BaseDO;
 import lombok.*;
 
 /**
- * 消息 DO
+ * Message DO
  *
  * @author 芋道源码
  */
@@ -20,62 +20,63 @@ import lombok.*;
 public class MessagesDO extends BaseDO {
 
     /**
-     * id
+     * ID
      */
     @TableId
     private Long id;
     /**
-     *
+     * Message Key
      */
     private String messageKey;
     /**
-     * 场景 (推荐信、聊天、认证、邀请加入公会、系统通知)
+     * Scene (Recommendation, Chat, Authentication, Invitation to Join Guild, System Notification)
      */
     private String scene;
     /**
-     * 状态(邀请、回调)
+     * Status (Invitation, Callback)
      */
     private String type;
     /**
-     * 业务id (认证id、推荐信id..)
+     * Business ID (Authentication ID, Recommendation Letter ID, etc.)
      */
     private Long businessId;
     /**
-     * 业务链接
+     * Business Link
      */
     private String businessLink;
     /**
-     * 发起者
+     * Initiator
      */
     private Long initiatorId;
     /**
-     * 接收者
+     * Receiver
      */
     private Long receiverId;
     /**
-     * 发起者公会id
+     * Initiator's Guild ID
      */
     private Long initiatorLeagueId;
     /**
-     * 接收方公会id
+     * Receiver's Guild ID
      */
     private Long receiverLeagueId;
 
     /**
-     * 消息参数
+     * Message Parameters
      */
     private String messageParam;
     /**
-     * 消息内容
+     * Message Content
      */
     private String content;
     /**
-     * 已读状态(UR-未读 ,R-已读)
+     * Read Status (UR - Unread, R - Read)
      */
     private String readFlag;
     /**
-     * 处理标志(ND-不处理 ,D-处理,AD-已处理)
+     * Processing Flag (ND - Not Processed, D - Processed, AD - Already Processed)
      */
     private String dealFlag;
 
 }
+

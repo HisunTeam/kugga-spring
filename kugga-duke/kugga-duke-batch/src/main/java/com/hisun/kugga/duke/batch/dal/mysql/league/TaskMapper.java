@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 公会规则 Mapper
+ * Guild Rules Mapper
  *
  * @author 芋道源码
  */
 @Mapper
 public interface TaskMapper extends BaseMapperX<TaskDO> {
     /**
-     * 查询已过期邀请认证过期的数据（查询两周内的数据,避免查询压力过大）
+     * Query data for expired invitation authentication tasks (within two weeks to avoid excessive query load)
      *
      * @return
      */
@@ -34,7 +34,7 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
     }
 
     /**
-     * 查询已过期邀请认证过期的数据（查询两周内的数据,避免查询压力过大）
+     * Query data for expired chat tasks (within two weeks to avoid excessive query load)
      *
      * @return
      */
@@ -49,7 +49,7 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
     }
 
     /**
-     * 查询已过期邀请认证过期的数据（查询两周内的数据,避免查询压力过大）
+     * Query data for expired report tasks (within two weeks to avoid excessive query load)
      *
      * @return
      */
@@ -64,7 +64,7 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
     }
 
     /**
-     * 更新认证任务为退款
+     * Update authentication tasks to refund status
      *
      * @param taskId
      * @return
@@ -79,9 +79,8 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
         );
     }
 
-
     /**
-     * 更新聊天任务为退款
+     * Update chat tasks to refund status
      *
      * @param taskId
      * @return
@@ -97,7 +96,7 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
     }
 
     /**
-     * 更新推荐报告任务为退款
+     * Update report tasks to refund status
      *
      * @param taskId
      * @return
@@ -112,6 +111,11 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
         );
     }
 
+    /**
+     * Query list of league authentication refunds
+     *
+     * @return
+     */
     default List<TaskDO> queryLeagueAuthRefundList() {
         return selectList(
                 new LambdaQueryWrapperX<TaskDO>()
@@ -121,6 +125,4 @@ public interface TaskMapper extends BaseMapperX<TaskDO> {
                         .orderByAsc(TaskDO::getId).last("limit 1000")
         );
     }
-
-    ;
 }

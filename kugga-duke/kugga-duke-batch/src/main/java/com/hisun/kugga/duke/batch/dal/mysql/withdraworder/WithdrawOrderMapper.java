@@ -9,14 +9,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.cursor.Cursor;
 
 /**
- * 提现订单 Mapper
+ * Withdrawal Order Mapper
  *
  * @author 芋道源码
  */
 @Mapper
 public interface WithdrawOrderMapper extends BaseMapperX<WithdrawOrderDO> {
     /**
-     * 所有draft状态提现订单
+     * All withdrawal orders in draft status
      *
      * @return
      */

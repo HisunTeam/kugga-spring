@@ -8,14 +8,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.cursor.Cursor;
 
 /**
- * 支付订单退款 Mapper
+ * Payment Order Refund Mapper
  *
  * @author 芋道源码
  */
 @Mapper
 public interface PayOrderRefundMapper extends BaseMapperX<PayOrderRefundDO> {
     /**
-     * 查询待退款的记录
+     * Query records pending for refund
      *
      * @return
      */
@@ -28,3 +28,4 @@ public interface PayOrderRefundMapper extends BaseMapperX<PayOrderRefundDO> {
                 .eq(PayOrderRefundDO::getStatus, PayOrderRefundStatus.PRE_REFUND));
     }
 }
+

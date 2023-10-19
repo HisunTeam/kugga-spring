@@ -20,7 +20,7 @@ import java.util.List;
 public interface TaskReportMapper extends BaseMapperX<TaskReportDO> {
 
     /**
-     * 根据taskId查询,推荐报告列表
+     * Query a list of recommended reports by taskId
      *
      * @param taskId
      * @return
@@ -34,7 +34,7 @@ public interface TaskReportMapper extends BaseMapperX<TaskReportDO> {
     }
 
     /**
-     * 根据taskId更新成退款
+     * Update a task to refund status by taskId
      *
      * @param taskId
      * @return
@@ -49,7 +49,7 @@ public interface TaskReportMapper extends BaseMapperX<TaskReportDO> {
     }
 
     /**
-     * 根据noticeId查询,推荐报告列表
+     * Query a list of recommended reports by noticeId
      *
      * @param noticeId
      * @return
@@ -63,7 +63,7 @@ public interface TaskReportMapper extends BaseMapperX<TaskReportDO> {
     }
 
     /**
-     * 根据noticeId更新成退款
+     * Update a task to refund status by noticeId
      *
      * @param noticeId
      * @return

@@ -82,7 +82,6 @@ public class AllocationResultJob implements JobHandler {
                         // 生成用户账单
                         UserBillDO userBillDO = new UserBillDO()
                                 .setBillNo(SNOWFLAKE.nextIdStr())
-                                .setWalletOrderNo(payOrderSubDO.getWalletOrderNo())
                                 .setUserId(payOrderSubDO.getReceiverId())
                                 .setAmount(payOrderSubDO.getAmount())
                                 .setStatus(CommonConstants.BillStatus.SUCCESS)

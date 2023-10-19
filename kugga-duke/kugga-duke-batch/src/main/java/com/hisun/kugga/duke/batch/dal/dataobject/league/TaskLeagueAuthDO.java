@@ -21,24 +21,24 @@ import java.math.BigDecimal;
  */
 @TableName("duke_task_league_auth")
 @Data
-@ApiModel("待认证公会表 任务类型为公会认证，任务关联 待认证公会与认证公会")
+@ApiModel("Pending Authentication Guild Table - Task type is Guild Authentication, Task associates Pending Authentication Guild with Authentication Guild")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskLeagueAuthDO extends BaseDO {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    @ApiModelProperty(value = "任务ID")
+    @ApiModelProperty(value = "Task ID")
     private Long taskId;
-    @ApiModelProperty(value = "公会公告栏ID")
+    @ApiModelProperty(value = "Guild Notice Board ID")
     private Long noticeId;
-    @ApiModelProperty(value = "订单号")
+    @ApiModelProperty(value = "Order Number")
     private String appOrderNo;
-    @ApiModelProperty(value = "子订单价格")
+    @ApiModelProperty(value = "Sub-Order Price")
     private BigDecimal amount;
-    @ApiModelProperty(value = "付费类型 0免费 1付费")
+    @ApiModelProperty(value = "Payment Type: 0 (Free), 1 (Paid)")
     private TaskPayTypeEnum payType;
-    @ApiModelProperty(value = "状态 0未支付 1已支付 2已分账 3已退款")
+    @ApiModelProperty(value = "Status: 0 (Unpaid), 1 (Paid), 2 (Shared), 3 (Refunded)")
     private PayStatusEnum status;
 
     @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)

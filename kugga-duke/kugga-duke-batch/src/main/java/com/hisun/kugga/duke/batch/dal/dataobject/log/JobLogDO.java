@@ -9,12 +9,12 @@ import lombok.*;
 import java.util.Date;
 
 /**
- * 定时任务的执行日志
+ * Execution Logs of Scheduled Tasks
  *
  * @author 芋道源码
  */
 @TableName("infra_job_log")
-@KeySequence("infra_job_log_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("infra_job_log_seq") // Auto-increment primary key for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If using MySQL or similar databases, it is not required
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -24,49 +24,49 @@ import java.util.Date;
 public class JobLogDO extends BaseDO {
 
     /**
-     * 日志编号
+     * Log ID
      */
     private Long id;
     /**
-     * 任务编号
+     * Job ID
      */
     private Long jobId;
     /**
-     * 处理器的名字
+     * Name of the handler
      */
     private String handlerName;
     /**
-     * 处理器的参数
+     * Handler parameters
      */
     private String handlerParam;
     /**
-     * 第几次执行
-     * <p>
-     * 用于区分是不是重试执行。如果是重试执行，则 index 大于 1
+     * Execution index
+     *
+     * Used to differentiate between initial execution and retries. If it's a retry, the index is greater than 1.
      */
     private Integer executeIndex;
 
     /**
-     * 开始执行时间
+     * Start execution time
      */
     private Date beginTime;
     /**
-     * 结束执行时间
+     * End execution time
      */
     private Date endTime;
     /**
-     * 执行时长，单位：毫秒
+     * Duration of execution in milliseconds
      */
     private Integer duration;
     /**
-     * 状态
+     * Status
      */
     private Integer status;
     /**
-     * 结果数据
-     * <p>
-     * 成功时，使用 {@link JobHandler#execute(String)} 的结果
-     * 失败时，使用 {@link JobHandler#execute(String)} 的异常堆栈
+     * Result data
+     *
+     * - When successful, it contains the result of {@link JobHandler#execute(String)}
+     * - When failed, it contains the exception stack trace from {@link JobHandler#execute(String)}
      */
     private String result;
 

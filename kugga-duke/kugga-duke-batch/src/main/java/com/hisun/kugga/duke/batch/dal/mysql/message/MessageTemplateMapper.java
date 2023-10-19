@@ -8,14 +8,14 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- * 消息模板参数 Mapper
+ * Message Template Parameters Mapper
  *
  * @author 芋道源码
  */
 @Mapper
 public interface MessageTemplateMapper extends BaseMapperX<MessageTemplateDO> {
     /**
-     * 根据语言查询模板列表
+     * Query template list by language
      *
      * @param language
      * @return

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.cursor.Cursor;
 
 /**
- * 充值订单 Mapper
+ * Recharge Order Mapper
  *
  * @author 芋道源码
  */

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * <p>
- * 贴子上升计数表 Mapper 接口
+ * Post Rise Count Table Mapper Interface
  * </p>
  *
  * @author zuocheng
@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper
 public interface PostsRiseCountMapper extends BaseMapperX<PostsRiseCountDO> {
     /**
-     * 查询时间断内的回复（热度）统计
+     * Query the statistics of replies (popularity) within a time interval
      *
      * @param startTime
      * @param endTime
@@ -27,3 +27,4 @@ public interface PostsRiseCountMapper extends BaseMapperX<PostsRiseCountDO> {
      */
     List<PostsRiseCountDO> queryRiseNum(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 }
+

@@ -5,7 +5,7 @@ import com.hisun.kugga.framework.mybatis.core.mapper.BaseMapperX;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 加入公会审批 Mapper
+ * Guild Membership Approval Mapper
  *
  * @author 芋道源码
  */

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * 公会订阅流水 Mapper
+ * Guild Subscription Transactions Mapper
  *
  * @author 芋道源码
  */
@@ -15,7 +15,7 @@ import org.apache.ibatis.annotations.Param;
 public interface LeagueSubscribeFlowMapper extends BaseMapperX<LeagueSubscribeFlowDO> {
 
     /**
-     * 查询是否有存在的流水记录
+     * Check for the existence of transaction records
      *
      * @param subscribe
      * @return

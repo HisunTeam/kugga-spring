@@ -11,12 +11,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 支付订单退款 DO
+ * Payment Order Refund DO
  *
  * @author 芋道源码
  */
 @TableName("duke_pay_order_refund")
-@KeySequence("duke_pay_order_refund_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_pay_order_refund_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -26,32 +26,32 @@ import java.util.Date;
 public class PayOrderRefundDO extends BaseDO {
 
     /**
-     * 退款id
+     * Refund ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     private String appOrderNo;
     /**
-     * 钱包退款记录编号
+     * Wallet Refund Record Number
      */
     private String refundNo;
     /**
-     * 退款金额
+     * Refund Amount
      */
     private BigDecimal amount;
     /**
-     * 状态： preRefund 待分账；refundSuccess 退款成功；refundFailed 退款失败
+     * Status: preRefund (Pending Split); refundSuccess (Refund Successful); refundFailed (Refund Failed)
      */
     private PayOrderRefundStatus status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
     /**
-     * 退款完成时间
+     * Refund Completion Time
      */
     private Date successTime;
 

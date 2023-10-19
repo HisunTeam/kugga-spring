@@ -23,25 +23,25 @@ import java.time.LocalDateTime;
  */
 @TableName("duke_task_report")
 @Data
-@ApiModel("任务 写推荐报告的子订单表")
+@ApiModel("Task Sub-Order Table for Writing Recommendation Reports")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskReportDO extends BaseDO {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    @ApiModelProperty(value = "任务ID")
+    @ApiModelProperty(value = "Task ID")
     private Long taskId;
-    @ApiModelProperty(value = "公会公告栏ID")
+    @ApiModelProperty(value = "Guild Notice Board ID")
     private Long noticeId;
-    @ApiModelProperty(value = "订单号")
+    @ApiModelProperty(value = "Order Number")
     private String appOrderNo;
-    @ApiModelProperty(value = "推荐报告金额 子订单价格")
+    @ApiModelProperty(value = "Recommendation Report Amount (Sub-Order Price)")
     private BigDecimal amount;
-    @ApiModelProperty(value = "付费类型 0免费 1付费")
+    @ApiModelProperty(value = "Payment Type: 0 (Free), 1 (Paid)")
     private TaskPayTypeEnum payType;
-    @ApiModelProperty(value = "状态 0未支付 1已支付 2已分账 3已退款")
+    @ApiModelProperty(value = "Status: 0 (Unpaid), 1 (Paid), 2 (Shared), 3 (Refunded)")
     private PayStatusEnum status;
-    @ApiModelProperty(value = "过期时间")
+    @ApiModelProperty(value = "Expiration Time")
     private LocalDateTime expiresTime;
 }

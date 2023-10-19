@@ -20,7 +20,7 @@ import java.util.List;
 @Mapper
 public interface LeagueNoticeMapper extends BaseMapperX<LeagueNoticeDO> {
     /**
-     * 根据taskId修改通知状态(更新成失效)
+     * Update the notification status to invalid based on taskId
      *
      * @param taskId
      * @return
@@ -33,7 +33,7 @@ public interface LeagueNoticeMapper extends BaseMapperX<LeagueNoticeDO> {
     }
 
     /**
-     * 查询过期数据
+     * Query expired data
      *
      * @return
      */
@@ -49,7 +49,7 @@ public interface LeagueNoticeMapper extends BaseMapperX<LeagueNoticeDO> {
     }
 
     /**
-     * 根据ID修改通知为失效
+     * Update the notification to invalid by ID
      *
      * @param notice
      * @return

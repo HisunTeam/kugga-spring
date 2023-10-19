@@ -9,14 +9,14 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- * 消息 Mapper
+ * Message Mapper
  *
  * @author 芋道源码
  */
 @Mapper
 public interface MessagesMapper extends BaseMapperX<MessagesDO> {
     /**
-     * 根据任务号查询需处理的消息
+     * Query messages to be processed by task ID
      *
      * @param businessId
      * @param dealStatus
@@ -29,12 +29,12 @@ public interface MessagesMapper extends BaseMapperX<MessagesDO> {
     }
 
     /**
-     * 消息过期处理， 公会认证 聊天 business_id是taskId、推荐报告business_id是noticeId
+     * Handle expired messages, for guild authentication, chat, and recommendation reports.
+     * The business_id is taskId for authentication and noticeId for recommendation reports.
      *
      * @param messagesDO
      * @param businessId
      */
-    //update duke_message set deal_flag = 'EX' where business_id = '1' and deal_flag = 'D'
     default void updateExpireByBusinessId(MessagesDO messagesDO, Long businessId) {
         update(messagesDO, new LambdaQueryWrapper<MessagesDO>()
                 .eq(MessagesDO::getBusinessId, businessId)

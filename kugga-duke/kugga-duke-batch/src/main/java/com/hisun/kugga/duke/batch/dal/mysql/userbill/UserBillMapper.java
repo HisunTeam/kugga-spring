@@ -5,7 +5,7 @@ import com.hisun.kugga.framework.mybatis.core.mapper.BaseMapperX;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 用户账单 Mapper
+ * User Bill Mapper
  *
  * @author zhou_xiong
  */

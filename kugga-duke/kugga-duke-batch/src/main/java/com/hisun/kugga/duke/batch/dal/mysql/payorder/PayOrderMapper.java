@@ -11,7 +11,7 @@ import org.apache.ibatis.cursor.Cursor;
 import java.math.BigDecimal;
 
 /**
- * 订单 Mapper
+ * Order Mapper
  *
  * @author zhou_xiong
  */

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 贴子上升计数表
+ * Post Rise Count Table
  * </p>
  *
  * @author zuocheng
@@ -23,23 +23,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostsRiseCountDO {
     /**
-     * 楼层ID
+     * Floor ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 贴子ID 与duke_posts id一致
+     * Post ID, consistent with duke_posts id
      */
     private Long postsId;
 
     /**
-     * 计数
+     * Count
      */
     private Integer num;
 
     /**
-     * 创建时间
+     * Creation time
      */
     private LocalDateTime createTime;
 }

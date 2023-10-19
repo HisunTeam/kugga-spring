@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * <p>
- * 邀请链绑定表(绑定链的发起者与邀请类型) Mapper 接口
+ * Mapper Interface for the Invitation Link Binding Table (Binding Initiator and Invitation Type)
  * </p>
  *
  * @author zuocheng
@@ -19,8 +19,8 @@ import java.util.List;
 @Mapper
 public interface LeagueInviteUrlBindMapper extends BaseMapperX<LeagueInviteUrlBindDO> {
     /**
-     * 查询已到失效时间,但状态还处于未失效的状态的数据
-     * 未避免数据压力过大,只查询一断时间内的数据（这里也写两周）,最多查询1000条,避免数据太大
+     * Query data that has reached the expiration time but is still in a non-expired state
+     * To avoid excessive data pressure, only query data within a certain time frame (here, two weeks), up to 1000 records, to prevent data from becoming too large
      *
      * @param nowTime
      * @return

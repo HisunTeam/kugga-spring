@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * @Author: ZhouAnYan
  * @Email: yan_zay@163.com
  * @Date: 2022-07-25 9:29
- * 公会任务表
+ * Guild Task Table
  */
 @TableName("duke_task")
 @Data
@@ -25,26 +25,26 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("任务表")
+@ApiModel("Task Table")
 public class TaskDO extends BaseDO {
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "任务表ID")
+    @ApiModelProperty(value = "Task Table ID")
     private Long id;
-    @ApiModelProperty(value = "任务发起者ID")
+    @ApiModelProperty(value = "Task Initiator ID")
     private Long userId;
-    @ApiModelProperty(value = "任务发起类型 1 推荐报告 2 认证 3 聊天")
+    @ApiModelProperty(value = "Task Initiator Type: 1 (Recommendation Report), 2 (Authentication), 3 (Chat)")
     private TaskTypeEnum type;
-    @ApiModelProperty(value = "任务状态 1 已发布 2 被接单 3 已完成")
+    @ApiModelProperty(value = "Task Status: 1 (Published), 2 (Accepted), 3 (Completed)")
     private TaskStatusEnum status;
-    @ApiModelProperty(value = "任务状态 1 已发布 2 被接单 3 已完成")
+    @ApiModelProperty(value = "Task Payment Type: 1 (Paid)")
     private TaskPayTypeEnum payType;
-    @ApiModelProperty(value = "任务金额")
+    @ApiModelProperty(value = "Task Amount")
     private BigDecimal amount;
-    @ApiModelProperty(value = "订单编号")
+    @ApiModelProperty(value = "Order Number")
     private String orderRecord;
-    @ApiModelProperty(value = "业务参数")
+    @ApiModelProperty(value = "Business Parameters")
     private String businessParams;
-    @ApiModelProperty(value = "失效时间")
+    @ApiModelProperty(value = "Expiration Time")
     private LocalDateTime expiresTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)

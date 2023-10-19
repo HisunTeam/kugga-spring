@@ -9,12 +9,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * 加入公会审批 DO
+ * Guild Join Approval Data Object
  *
  * @author 芋道源码
  */
 @TableName("duke_task_league_join_approval")
-@KeySequence("duke_league_join_approval_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_league_join_approval_seq") // Used for primary key auto-increment in Oracle, PostgreSQL, Kingbase, DB2, H2 databases. Not needed for MySQL, etc.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -24,32 +24,32 @@ import java.time.LocalDateTime;
 public class LeagueJoinApprovalDO extends BaseDO {
 
     /**
-     * id
+     * ID
      */
     @TableId
     private Long id;
     /**
-     * 公会加入表id
+     * Guild Join Table ID
      */
     private Long businessId;
     /**
-     * 用户id
+     * User ID
      */
     private Long userId;
     /**
-     * 所加入公会id
+     * Joined Guild ID
      */
     private Long leagueId;
     /**
-     * 加入理由
+     * Join Reason
      */
     private String joinReason;
     /**
-     * 审批状态 0未审批、1已同意、2已拒绝、3已过期
+     * Approval Status: 0 (Not Approved), 1 (Approved), 2 (Rejected), 3 (Expired)
      */
     private Integer status;
     /**
-     * 过期时间
+     * Expiration Time
      */
     private LocalDateTime expireTime;
 }

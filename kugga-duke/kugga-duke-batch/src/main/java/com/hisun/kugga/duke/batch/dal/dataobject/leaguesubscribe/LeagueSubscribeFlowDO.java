@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 公会订阅流水 DO
+ * Guild Subscription Flow Data Object
  *
  * @author 芋道源码
  */
@@ -23,44 +23,45 @@ import java.time.LocalDateTime;
 public class LeagueSubscribeFlowDO extends BaseDO {
 
     /**
-     * 订阅流水id
+     * Subscription Flow ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 订阅id
+     * Subscription ID
      */
     private Long subscribeId;
     /**
-     * 用户id
+     * User ID
      */
     private Long userId;
     /**
-     * 公会id
+     * Guild ID
      */
     private Long leagueId;
     /**
-     * 订阅类型
+     * Subscription Type
      */
     private String subscribeType;
     /**
-     * 订阅价格
+     * Subscription Price
      */
     private BigDecimal price;
     /**
-     * 订单号
+     * Order Number
      */
     private String appOrderNo;
     /**
-     * 订阅时间
+     * Subscription Time
      */
     private LocalDateTime subscribeTime;
     /**
-     * 业务状态 (0初始化、1已下单、2已支付、3已分账、6失败)
+     * Business Status (0 initialized, 1 placed, 2 paid, 3 split, 6 failed)
      */
     private Integer businessStatus;
     /**
-     * 备注(如果是失败，可以记录失败原因)
+     * Remark (can record the reason if it's a failure)
      */
     private String remark;
 }
+

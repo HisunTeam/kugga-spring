@@ -7,7 +7,7 @@ import com.hisun.kugga.framework.mybatis.core.dataobject.BaseDO;
 import lombok.*;
 
 /**
- * 消息模板参数 DO
+ * Message Template Parameters DO
  *
  * @author 芋道源码
  */
@@ -21,49 +21,49 @@ import lombok.*;
 public class MessageTemplateDO extends BaseDO {
 
     /**
-     * 消息模板ID
+     * Message Template ID
      */
     @TableId
     private Long id;
     /**
-     * 排序区分作用
+     * Sorting distinction
      */
     private String messageCode;
 
     /**
-     * 消息场景，对应{@link MessageTemplateEnum}
+     * Message Scene, corresponds to {@link MessageTemplateEnum}
      */
     private String messageKey;
     /**
-     * 消息场景，对应
+     * Message Scene
      */
     private String messageScene;
     /**
-     * 消息类型 对应
+     * Message Type
      */
     private String messageType;
     /**
-     * 语言
+     * Language
      */
     private String language;
     /**
-     * 消息主题
+     * Message Subject
      */
     private String subject;
     /**
-     * 消息模板，替换值以{}标识
+     * Message Template with replacement values enclosed in {}
      */
     private String template;
     /**
-     * 原始模板
+     * Original Template
      */
     private String originalTemplate;
     /**
-     * 发送间隔，单位：秒
+     * Sending Interval, in seconds
      */
     private Long sendInterval;
     /**
-     * 每日单个发送对象发送次数限制
+     * Daily Send Limit per individual recipient
      */
     private Integer sendLimit;
 

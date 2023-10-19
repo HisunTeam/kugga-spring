@@ -9,12 +9,12 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 用户账单 DO
+ * User Bill Data Object (DO)
  *
- * @author zhou_xiong
+ * Author: zhou_xiong
  */
 @TableName("duke_user_bill")
-@KeySequence("duke_user_bill_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_user_bill_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -24,35 +24,36 @@ import java.math.BigDecimal;
 public class UserBillDO extends BaseDO {
 
     /**
-     * 交易id
+     * Transaction ID
      */
     @TableId
     private Long id;
     /**
-     * 账单号
+     * Bill Number
      */
     private String billNo;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
     private String walletOrderNo;
     /**
-     * 用户ID
+     * User ID
      */
     private Long userId;
     /**
-     * 账单金额
+     * Bill Amount
      */
     private BigDecimal amount;
-
+    /**
+     * Fee
+     */
     private BigDecimal fee;
     /**
-     * 账单状态: I-初始,W-在途,S-成功,F-失败
+     * Bill Status: I - Initial, W - In Transit, S - Success, F - Failure
      */
     private String status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
-
 }

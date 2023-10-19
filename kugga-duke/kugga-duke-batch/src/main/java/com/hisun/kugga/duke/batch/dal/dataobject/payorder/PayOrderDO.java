@@ -12,14 +12,13 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-
 /**
- * 订单 DO
+ * Order Data Object (DO)
  *
- * @author zhou_xiong
+ * Author: zhou_xiong
  */
 @TableName("duke_pay_order")
-@KeySequence("duke_pay_order_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_pay_order_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -28,60 +27,60 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PayOrderDO extends BaseDO {
     /**
-     * id
+     * ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     private String appOrderNo;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
     private String walletOrderNo;
     /**
-     * 订单类型【1、创建公会；2、公会认证；3、写推荐报告；4、发起聊天】
+     * Order Type [1: Create Guild; 2: Guild Authentication; 3: Write Recommendation Report; 4: Initiate Chat]
      */
     private OrderType orderType;
     /**
-     * 交易人(用户ID)
+     * Trader (User ID)
      */
     private Long payerId;
     /**
-     * 付款账户类型
+     * Payment Account Type
      */
     private AccountType accountType;
     /**
-     * 钱包账户
+     * Wallet Account
      */
     private String accountId;
     /**
-     * 支付方式
+     * Payment Method
      */
     private PayChannel payChannel;
     /**
-     * 交易金额
+     * Transaction Amount
      */
     private BigDecimal payAmount;
     /**
-     * 已分账金额
+     * Split Amount
      */
     private BigDecimal splitAmount;
     /**
-     * 已退款金额
+     * Refunded Amount
      */
     private BigDecimal refundAmount;
     /**
-     * 交易币种
+     * Currency
      */
     private String currency;
     /**
-     * 订单状态: prepay 预支付；processing 处理中；success 已成功；failed 交易失败；closed 已关闭
+     * Order Status: prepay (Prepayment); processing (Processing); success (Successful); failed (Transaction Failed); closed (Closed)
      */
     private PayOrderStatus status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 

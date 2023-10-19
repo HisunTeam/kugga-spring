@@ -11,12 +11,12 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 红包订单 DO
+ * Red Packet Order Data Object (DO)
  *
- * @author zhou_xiong
+ * Author: zhou_xiong
  */
 @TableName("duke_red_packet_order")
-@KeySequence("duke_red_packet_order_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_red_packet_order_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -26,56 +26,56 @@ import java.math.BigDecimal;
 public class RedPacketOrderDO extends BaseDO {
 
     /**
-     * 订单id
+     * Order ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     private String appOrderNo;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
     private String walletOrderNo;
     /**
-     * 付款方id
+     * Payer ID
      */
     private Long payerId;
     /**
-     * 付款方账户类型
+     * Payer Account Type
      */
     private AccountType accountType;
     /**
-     * 钱包账户
+     * Wallet Account
      */
     private String accountId;
     /**
-     * 支付方式【balance：余额支付，paypal：paypal支付】
+     * Payment Method [balance: Balance Payment, paypal: PayPal Payment]
      */
     private String payChannel;
     /**
-     * 红包总金额
+     * Total Red Packet Amount
      */
     private BigDecimal amount;
     /**
-     * 手续费
+     * Handling Fee
      */
     private BigDecimal fee;
     /**
-     * 币种
+     * Currency
      */
     private String currency;
     /**
-     * 状态： draft 待发放；processing 处理中；partial_success 部分发放成功；full_success 已全部发放成功；failed 已退款；
+     * Status: draft (Pending Distribution); processing (Processing); partial_success (Partial Distribution Success); full_success (All Distributed Successfully); failed (Refunded)
      */
     private RedPacketOrderStatus status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
     /**
-     * 完成时间
+     * Completion Time
      */
     private String completeTime;
 }

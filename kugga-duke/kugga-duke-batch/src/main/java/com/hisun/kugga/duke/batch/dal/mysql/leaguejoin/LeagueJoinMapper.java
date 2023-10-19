@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 公会加入 Mapper
+ * Joining a Guild Mapper
  *
  * @author 芋道源码
  */
@@ -20,9 +20,10 @@ import java.util.List;
 public interface LeagueJoinMapper extends BaseMapperX<LeagueJoinDO> {
 
     /**
-     * 查询当前是否存在有效申请记录 ,只有支付了才算有效的
+     * Query if there is a current valid application record, only considered valid if it's paid
      *
      * @param userId
+     * @param leagueId
      * @param status
      * @param now
      * @return
@@ -32,10 +33,8 @@ public interface LeagueJoinMapper extends BaseMapperX<LeagueJoinDO> {
                                          @Param("status") int status,
                                          @Param("now") LocalDateTime now);
 
-
-
     /*
-    -- 过期申请记录
+    -- Expired application records
     select * from duke_task_league_join
     where business_status = 0
       and pay_status != 1
@@ -44,7 +43,7 @@ public interface LeagueJoinMapper extends BaseMapperX<LeagueJoinDO> {
      */
 
     /**
-     * 查询申请过期记录
+     * Query expired application records
      *
      * @return
      */

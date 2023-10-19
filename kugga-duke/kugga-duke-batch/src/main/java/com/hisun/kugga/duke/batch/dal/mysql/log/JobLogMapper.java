@@ -5,7 +5,7 @@ import com.hisun.kugga.framework.mybatis.core.mapper.BaseMapperX;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 任务日志 Mapper
+ * Task Logs Mapper
  *
  * @author 芋道源码
  */

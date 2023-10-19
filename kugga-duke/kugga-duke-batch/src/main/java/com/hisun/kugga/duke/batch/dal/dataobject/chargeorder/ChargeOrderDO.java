@@ -25,41 +25,42 @@ import java.util.Date;
 public class ChargeOrderDO extends BaseDO {
 
     /**
-     * 订单id
+     * Order ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal order number
      */
     private String appOrderNo;
     /**
-     * 钱包订单号
+     * Wallet order number
      */
     private String walletOrderNo;
     /**
-     * 用户id
+     * User ID
      */
     private Long userId;
     /**
-     * 钱包账号
+     * Wallet account
      */
     private String accountId;
     /**
-     * 充值金额，单位：分
+     * Recharge amount, in cents
      */
     private BigDecimal amount;
     /**
-     * 交易币种
+     * Transaction currency
      */
     private String currency;
     /**
-     * 充值状态init 初始化；success 充值支付成功；failed 交易失败；expired 支付链接已失效
+     * Recharge status: init (Initialization); success (Recharge Payment Successful); failed (Transaction Failed); expired (Payment Link has Expired)
      */
     private String status;
     /**
-     * 到账时间
+     * Arrival time
      */
     private Date receivedTime;
 
 }
+

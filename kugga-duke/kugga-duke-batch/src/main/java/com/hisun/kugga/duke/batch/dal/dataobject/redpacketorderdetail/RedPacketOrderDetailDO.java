@@ -10,12 +10,12 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 红包订单详情 DO
+ * Red Packet Order Detail Data Object (DO)
  *
- * @author zhou_xiong
+ * Author: zhou_xiong
  */
 @TableName("duke_red_packet_order_detail")
-@KeySequence("duke_red_packet_order_detail_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_red_packet_order_detail_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -25,33 +25,32 @@ import java.math.BigDecimal;
 public class RedPacketOrderDetailDO extends BaseDO {
 
     /**
-     * 订单明细id
+     * Order Detail ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     private String appOrderNo;
     /**
-     * 收款方id
+     * Receiver ID
      */
     private Long receiverId;
     /**
-     * 收款方账户类型
+     * Receiver Account Type
      */
     private AccountType accountType;
     /**
-     * 收款方钱包账户
+     * Receiver Wallet Account
      */
     private String accountId;
     /**
-     * 收款金额
+     * Received Amount
      */
     private BigDecimal amount;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
-
 }

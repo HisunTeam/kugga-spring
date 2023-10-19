@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.cursor.Cursor;
 
 /**
- * 红包订单 Mapper
+ * Red Packet Order Mapper
  *
  * @author zhou_xiong
  */

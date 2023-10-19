@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper
 public interface TaskLeagueAuthMapper extends BaseMapperX<TaskLeagueAuthDO> {
     /**
-     * 根据taskId查询,认证列表
+     * Query authentication list by taskId
      *
      * @param taskId
      * @return
@@ -33,7 +33,7 @@ public interface TaskLeagueAuthMapper extends BaseMapperX<TaskLeagueAuthDO> {
     }
 
     /**
-     * 根据taskId更新成退款
+     * Update to refund by taskId
      *
      * @param taskId
      * @return

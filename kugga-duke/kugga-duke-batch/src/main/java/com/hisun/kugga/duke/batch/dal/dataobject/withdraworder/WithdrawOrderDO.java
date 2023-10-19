@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 提现订单 DO
+ * Withdrawal Order DO
  *
  * @author 芋道源码
  */
 @TableName("duke_withdraw_order")
-@KeySequence("duke_withdraw_order_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_withdraw_order_seq") // Used for Oracle, PostgreSQL, Kingbase, DB2, H2 databases for auto-incrementing primary keys. Not needed for databases like MySQL.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -27,57 +27,56 @@ import java.util.Date;
 public class WithdrawOrderDO extends BaseDO {
 
     /**
-     * 订单id
+     * Order ID
      */
     @TableId
     private Long id;
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     private String appOrderNo;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
     private String walletOrderNo;
     /**
-     * 用户id
+     * User ID
      */
     private Long userId;
     /**
-     * 钱包账号
+     * Wallet Account
      */
     private String accountId;
     /**
-     * 提现金额，单位：元
+     * Withdrawal Amount, in units: yuan
      */
     private BigDecimal amount;
     /**
-     * 实际到账金额
+     * Actual Amount Received
      */
     private BigDecimal actualAmount;
     /**
-     * 手续费，单位：元
+     * Fee, in units: yuan
      */
     private BigDecimal fee;
     /**
-     * 提现方式 paypal
+     * Withdrawal Method: paypal
      */
     private WithdrawChannel withdrawChannel;
     /**
-     * 提现卡号
+     * Withdrawal Card Number
      */
     private String cardNo;
     /**
-     * 交易币种
+     * Currency
      */
     private String currency;
     /**
-     * 提现状态 draft 等待到账；success 已成功；failed 交易失败；
+     * Withdrawal Status: draft (Awaiting Credit); success (Successful); failed (Transaction Failed)
      */
     private WithdrawStatus status;
     /**
-     * 到账时间
+     * Credit Time
      */
     private Date receivedTime;
-
 }

@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 公会加入 DO
+ * Guild Join Data Object
  *
  * @author 芋道源码
  */
 @TableName("duke_task_league_join")
-@KeySequence("duke_league_join_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_league_join_seq") // Used for primary key auto-increment in Oracle, PostgreSQL, Kingbase, DB2, H2 databases. Not needed for MySQL, etc.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -25,56 +25,56 @@ import java.time.LocalDateTime;
 public class LeagueJoinDO extends BaseDO {
 
     /**
-     * id
+     * ID
      */
     @TableId
     private Long id;
     /**
-     * 用户id
+     * User ID
      */
     private Long userId;
     /**
-     * 所加入公会id
+     * Joined Guild ID
      */
     private Long leagueId;
     /**
-     * 业务状态 0初始化、1已同意、2已拒绝、3已过期
+     * Business Status: 0 (Initialization), 1 (Approved), 2 (Rejected), 3 (Expired)
      */
     private Integer businessStatus;
     /**
-     * 订单号
+     * Order Number
      */
     private String appOrderNo;
     /**
-     * 金额
+     * Amount
      */
     private BigDecimal amount;
     /**
-     * 支付状态 0免费 1未支付 2已支付
+     * Payment Status: 0 (Free), 1 (Unpaid), 2 (Paid)
      */
     private Integer payStatus;
     /**
-     * 金额状态 3已分账 5已退款
+     * Amount Status: 3 (Accounted), 5 (Refunded)
      */
     private Integer amountStatus;
     /**
-     * 过期时间
+     * Expiration Time
      */
     private LocalDateTime expireTime;
     /**
-     * 加入理由
+     * Join Reason
      */
     private String joinReason;
     /**
-     * 公会创建者id ，公会创建者id用于付费加入时去分账
+     * Guild Creator ID, used for splitting payments when joining with payment
      */
     private Long leagueCreateId;
     /**
-     * 是否需要管理员审批  true:是 false:否
+     * Requires Admin Approval: true (yes), false (no)
      */
     private Boolean enabledAdminApproval;
     /**
-     * 是否付费 1付费，0免费
+     * Payment Flag: 1 (Paid), 0 (Free)
      */
     private Boolean payFlag;
 }

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 公会成员订阅 DO
+ * Guild Member Subscription Data Object
  *
  * @author 芋道源码
  */
@@ -24,42 +24,42 @@ import java.time.LocalDateTime;
 public class LeagueSubscribeDO extends BaseDO {
 
     /**
-     * id
+     * ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 用户id
+     * User ID
      */
     private Long userId;
     /**
-     * 公会id
+     * Guild ID
      */
     private Long leagueId;
     /**
-     * 订阅类型
+     * Subscription Type
      */
     private String subscribeType;
     /**
-     * 订阅价格
+     * Subscription Price
      */
     private BigDecimal price;
     /**
-     * 订阅过期时间
+     * Subscription Expiration Time
      */
     private LocalDateTime expireTime;
     /**
-     * 订阅状态 true 订阅中 false取消订阅
+     * Subscription Status: true (subscribed), false (unsubscribed)
      */
     private Boolean status;
     /**
-     * 过期状态
-     * 可能存在
-     * 订阅状态 true过期状态false  正常状态
-     * 订阅状态 false过期状态false 取消订阅但是未过期
-     * 订阅状态 false过期状态true   取消订阅已过期
-     * status为false，但是过期时间还没到，此时为false
+     * Expiration Status
+     * Possible values:
+     * - Subscription Status true, Expiration Status false (Normal)
+     * - Subscription Status false, Expiration Status false (Unsubscribed but not expired)
+     * - Subscription Status false, Expiration Status true (Unsubscribed and expired)
+     * - Status is false, but the expiration time has not yet been reached (false)
      */
     private Boolean expireStatus;
 

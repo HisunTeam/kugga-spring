@@ -9,12 +9,12 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 公会账单 DO
+ * Guild Bill Data Object
  *
  * @author zhou_xiong
  */
 @TableName("duke_league_bill")
-@KeySequence("duke_league_bill_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("duke_league_bill_seq") // Used for primary key auto-increment in Oracle, PostgreSQL, Kingbase, DB2, H2 databases. Not needed for MySQL, etc.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -24,32 +24,32 @@ import java.math.BigDecimal;
 public class LeagueBillDO extends BaseDO {
 
     /**
-     * 交易id
+     * Transaction ID
      */
     @TableId
     private Long id;
     /**
-     * 账单号
+     * Bill Number
      */
     private String billNo;
     /**
-     * 钱包订单号
+     * Wallet Order Number
      */
-    private String walletOrderNo;
+    private String WalletOrderNo;
     /**
-     * 公会ID
+     * Guild ID
      */
     private Long leagueId;
     /**
-     * 交易金额
+     * Transaction Amount
      */
     private BigDecimal amount;
     /**
-     * 账单状态: U-初始,W-在途,S-成功,F-失败
+     * Bill Status: U (Initial), W (In Transit), S (Success), F (Failure)
      */
     private String status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 邀请链绑定表(绑定链的发起者与邀请类型)
+ * League Invite Link Binding Table (Binding Initiator and Invitation Type of the Link)
  * </p>
  *
  * @author zuocheng
@@ -24,43 +24,43 @@ import java.time.LocalDateTime;
 public class LeagueInviteUrlBindDO {
 
     /**
-     * 绑定ID
+     * Binding ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * uuid(就一个编号,用来查绑定关系)
+     * UUID (a single number used to query binding relationships)
      */
     private String uuid;
 
     /**
-     * 短链ID
+     * Short Link ID
      */
     private Long shortUrlId;
 
     /**
-     * 公会ID
+     * League ID
      */
     private Long leagueId;
 
     /**
-     * 邀请人ID
+     * Inviter ID
      */
     private Long userId;
 
     /**
-     * 创建时间
+     * Creation time
      */
     private LocalDateTime createTime;
 
     /**
-     * 失效时间
+     * Expiration time
      */
     private LocalDateTime expireTime;
 
     /**
-     * 失效状态: true已失效, false:未失效
+     * Expiration status: true (expired), false (not expired)
      */
     private Boolean expireStatus;
 }

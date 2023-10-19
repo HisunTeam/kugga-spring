@@ -23,23 +23,23 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("任务聊天表")
+@ApiModel("Task Chat Table")
 public class TaskChatDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "ID")
     private Long id;
-    @ApiModelProperty(value = "任务聊天key")
+    @ApiModelProperty(value = "Task Chat Key")
     private String taskChatKey;
-    @ApiModelProperty(value = "任务表ID")
+    @ApiModelProperty(value = "Task Table ID")
     private Long taskId;
-    @ApiModelProperty(value = "公会公告栏ID")
+    @ApiModelProperty(value = "Guild Notice Board ID")
     private Long noticeId;
-    @ApiModelProperty(value = "内部订单号")
+    @ApiModelProperty(value = "Internal Order Number")
     private String appOrderNo;
-    @ApiModelProperty(value = "聊天金额")
+    @ApiModelProperty(value = "Chat Amount")
     private BigDecimal amount;
-    @ApiModelProperty(value = "付费类型 0免费 1付费")
+    @ApiModelProperty(value = "Payment Type: 0 (Free), 1 (Paid)")
     private TaskPayTypeEnum payType;
-    @ApiModelProperty(value = "状态 0未支付 1已支付 2已分账 3待退款 4已退款")
+    @ApiModelProperty(value = "Status: 0 (Unpaid), 1 (Paid), 2 (Shared), 3 (Pending Refund), 4 (Refunded)")
     private PayStatusEnum status;
 }

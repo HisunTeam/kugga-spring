@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- * 支付订单子集 Mapper
+ * Subset of Payment Orders Mapper
  *
  * @author 芋道源码
  */

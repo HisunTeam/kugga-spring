@@ -30,34 +30,34 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class LeagueNoticeDO extends BaseDO {
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "公告栏ID不传值 数据库自增")
+    @ApiModelProperty(value = "Notice Board ID, not passed if self-incremented in the database")
     private Long id;
-    @ApiModelProperty(value = "所属任务")
+    @ApiModelProperty(value = "Belonging Task")
     private Long taskId;
-    @ApiModelProperty(value = "所属任务")
+    @ApiModelProperty(value = "Task Type")
     private TaskTypeEnum taskType;
-    @ApiModelProperty(value = "所属公会 (哪个公会的公告栏)")
+    @ApiModelProperty(value = "Belonging Guild (Guild's Notice Board)")
     private Long leagueId;
-    @ApiModelProperty(value = "公告类型")
+    @ApiModelProperty(value = "Notice Type")
     private LeagueNoticeTypeEnum type;
-    @ApiModelProperty(value = "状态 1未接单 2已接单 3已完成 4已失效")
+    @ApiModelProperty(value = "Status: 1 (Not Accepted), 2 (Accepted), 3 (Completed), 4 (Expired)")
     private LeagueNoticeStatusEnum status;
 
-    @ApiModelProperty(value = "主动用户")
+    @ApiModelProperty(value = "Active User")
     private Long useUserId;
-    @ApiModelProperty(value = "发起用户所属公会ID")
+    @ApiModelProperty(value = "Guild ID of the Initiating User")
     private Long useLeagueId;
 
-    @ApiModelProperty(value = "被动用户")
+    @ApiModelProperty(value = "Passive User")
     private Long byUserId;
-    @ApiModelProperty(value = "被发起用户所属公会ID")
+    @ApiModelProperty(value = "Guild ID of the Initiated User")
     private Long byLeagueId;
 
-    @ApiModelProperty(value = "付费类型 0免费 1付费")
+    @ApiModelProperty(value = "Payment Type: 0 (Free), 1 (Paid)")
     private TaskPayTypeEnum payType;
-    @ApiModelProperty(value = "金额")
+    @ApiModelProperty(value = "Amount")
     private BigDecimal amount;
-    @ApiModelProperty(value = "失效时间")
+    @ApiModelProperty(value = "Expiration Time")
     private LocalDateTime expiresTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)

@@ -5,7 +5,7 @@ import com.hisun.kugga.duke.batch.dal.dataobject.forum.PostsRiseCountDO;
 import org.springframework.stereotype.Repository;
 
 /**
- * 实现批量插入数据
+ * implement batch insertion
  *
  * @author zuocheng
  */
