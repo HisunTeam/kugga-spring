@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Environment Variable Prerequisites
 #
-#   LEMON_HOME      Point to the lemon server home directory.
+#   LEMON_HOME      Points to the lemon server home directory.
 #
 #   LEMON_ENV       Should be dev/sit/uat/str/pre/prd.
 #
@@ -13,13 +13,13 @@
 #
 #   LEMON_BATCH_ENABLED Should be true/false, default false
 #
-#   ACTUATOR_HEADER_AUTH Actuator need http authorization, set it with base64
+#   ACTUATOR_HEADER_AUTH Actuator needs HTTP authorization, set it with base64
 #
 #   LEMON_LOGGER_LEVEL Should be DEBUG/INFO/WARN/ERROR
 #
 #   APM_OPTS        APM path
 # -----------------------------------------------------------------------------
-#global variable(version)
+# Global variable (version)
 version=20210727
 
 if [ "$1" = "version" ] ; then
@@ -34,7 +34,7 @@ else
   exit 1
 fi
 
-#global variable(version)
+# Global variable (version)
 version=20210414
 
 if [ "$1" = "version" ] ; then
@@ -49,7 +49,7 @@ else
   exit 1
 fi
 
-#function defined
+# Function definition
 health_check() {
   local HEALTH_ENDPOINT="http://127.0.0.1:${PORT}/${ENDPOINTS_PREFIX}health"
   result=$(curl -H "${HTTP_HEADER_AUTH}" ${HEALTH_ENDPOINT})
@@ -79,31 +79,31 @@ getManagementPortByFile() {
   fi
 }
 
-# 检查默认端口是否监听
+# Check if the default port is listening
 getManagementDefaultPort() {
   PORT=$(netstat -anp 2>/dev/null | grep -w "LISTEN" | awk '{print $4}' | awk -F ":" '{print $NF}' |grep ${MANAGEMENT_PORT})
 }
 
 getManagementPortByNet() {
   PID=$1
-  # 随机取一个监听的端口，历史遗留处理
+  # Randomly select a listening port, a legacy treatment
   PORT=$(netstat -anp 2>/dev/null | grep -w "${PID}" | grep -w "LISTEN" | awk '{print $4}' | awk -F ":" '{print $NF}' | grep -v ${MANAGEMENT_PORT})
 }
 
 # Lemon home setting
 if [ -z "${LEMON_HOME}" ]; then
-  #本shell所在的上级目录
+  # The parent directory of the current shell script
   # LEMON_HOME=$HOME
   LEMON_HOME="$(
     cd $(dirname $0)
     cd ..
     pwd
   )"
-  # 需保证脚本运行目录在 LEMON_HOME 下统一生成、读取 application.pid、application.port
+  # Ensure script execution directory is under LEMON_HOME for consistent generation and reading of application.pid, application.port
   cd "$LEMON_HOME"
 fi
 
-# The home of executable jar
+# The home of the executable jar
 if [ -z "${LEMON_JAR_HOME}" ]; then
   LEMON_JAR_HOME=${LEMON_HOME}/lib
 fi
@@ -129,7 +129,7 @@ echo $APPID
 PID_FILE="${LEMON_HOME}/${APPID}.pid"
 MANAGEMENT_PORT=9527
 
-# Check if server is running
+# Check if the server is running
 if [ -f "${PID_FILE}" ]; then
   EXIST_PID=$(cat "${PID_FILE}")
   num=$(ps -p "${EXIST_PID}" | grep -c "${EXIST_PID}")
