@@ -164,18 +164,18 @@ getManagementPortByFile() {
   fi
 }
 
-# 检查默认端口是否监听
+# Check if the default port is listening
 getManagementDefaultPort() {
   PORT=$(netstat -anp 2>/dev/null | grep -w "LISTEN" | awk '{print $4}' | awk -F ":" '{print $NF}' | grep ${MANAGEMENT_PORT})
 }
 
 getManagementPortByNet() {
   PID=$1
-  # 随机取一个监听的端口，历史遗留处理
+  # Randomly pick a listening port, for historical legacy handling
   PORT=$(netstat -anp 2>/dev/null | grep -w "${PID}" | grep -w "LISTEN" | awk '{print $4}' | awk -F ":" '{print $NF}' | grep -v ${MANAGEMENT_PORT})
 }
 
-# 从落地文件中获取应用端口
+# Retrieve the application port from the landing file
 getApplicationPortByFile() {
   local PORT_FILE="${LEMON_HOME}/application.port"
   if [ -f "${PORT_FILE}" ]; then
@@ -183,10 +183,10 @@ getApplicationPortByFile() {
   fi
 }
 
-# 从启动监听端口中，获取应用端口
+# Get the application port from the startup listening port
 getApplicationPortByNet() {
   PID=$1
-  # 随机取一个监听的端口，历史遗留处理
+  # Randomly pick a listening port, legacy handling
   APPLICATION_PORT=$(netstat -anp 2>/dev/null | grep -w "${PID}" | grep -w "LISTEN" | awk '{print $4}' | awk -F ":" '{print $NF}'|grep -v ${MANAGEMENT_PORT})
 }
 
@@ -205,14 +205,14 @@ lock
 
 # Lemon home setting
 if [ -z "${LEMON_HOME}" ]; then
-  #本shell所在的上级目录
+  #The parent directory where this shell script resides.
   # LEMON_HOME=$HOME
   LEMON_HOME="$(
     cd $(dirname $0)
     cd ..
     pwd
   )"
-  # 需保证脚本运行目录在 LEMON_HOME 下统一生成、读取application.pid、application.port
+  # The script must be executed within the LEMON_HOME directory, ensuring consistent generation and retrieval of 'application.pid' and 'application.port' files.
   cd "$LEMON_HOME"
 fi
 
@@ -275,7 +275,7 @@ if [ -f "${PID_FILE}" ]; then
         getManagementDefaultPort
     fi
 
-    # 若management端口未监听，默认使用应用端口做为management端口
+    # In instances where the management port is not active or listening, the system will default to utilizing the application's service port as the management port.
     if [ -z "${PORT}" ]; then
         getManagementPortByNet ${EXIST_PID}
     fi
@@ -405,7 +405,7 @@ while [ ${start_sec} -lt ${max_sec} ]; do
     echo
     echo "Lemon started on port(s): ${APPLICATION_PORT}"
 
-    # 获取健康检查端口
+    # Retrieve the port used for health checks.
     if [ -z "${PORT}" ]; then
       getManagementDefaultPort
     fi
