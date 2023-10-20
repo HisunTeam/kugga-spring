@@ -28,9 +28,9 @@ import static com.hisun.kugga.duke.common.BusinessErrorCodeConstants.ILLEGAL_PAR
 import static com.hisun.kugga.framework.common.exception.util.ServiceExceptionUtil.exception;
 
 /**
- * 公会聊天、推荐报告、认证退款等
+ * Message Service Implementation
  *
- * @author zuo_cheng
+ * Author: Zuo Cheng
  */
 @Slf4j
 @Service
@@ -50,14 +50,15 @@ public class MessageServiceImpl implements MessageService {
     private InnerCallHelper innerCallHelper;
 
     /**
-     * 不推荐使用，batch发消息调用 sendMessage
+     * Deprecated - Not recommended for use. Batch messaging calls sendMessage.
+     *
      * @param templateEnum
      * @return
      */
     @Deprecated
     @Override
     public String getContent(MessageTemplateEnum templateEnum) {
-        // 读取缓存中的模板,若未读取到则重新缓存模板
+        // Read the template from the cache. If not found, cache the template again.
         String templateStr = redisTemplate.opsForValue().get(MESSAGE_TEMPLATE);
         if (ObjectUtil.isEmpty(templateStr)) {
             initMessageTemplate();
@@ -78,12 +79,12 @@ public class MessageServiceImpl implements MessageService {
         try {
             innerCallHelper.post(sendMessageUrl, sendMessageReqDTO, SendMessageReqDTO.class);
         } catch (Exception exception) {
-            log.error("batch-站内信通知异常：",exception);
+            log.error("Batch - Internal message notification exception: ", exception);
         }
     }
 
     /**
-     * 将模板写么缓存
+     * Cache message templates.
      */
     private void initMessageTemplate() {
         List<MessageTemplateDO> messageTemplateDos = messageTemplateMapper.selectListByLanguage("en-US");
@@ -91,10 +92,10 @@ public class MessageServiceImpl implements MessageService {
         HashMap<String, String> map = new HashMap<>(messageTemplateDos.size());
         if (ObjectUtil.isNotEmpty(messageTemplateDos)) {
             for (MessageTemplateDO templateDo : messageTemplateDos) {
-                // RECOMMENDATION_INVITE->张三邀请写推荐报告
-                // map.put(templateDo.getMessageScene()+"_"+templateDo.getMessageType(),templateDo.getTemplate());
+                // RECOMMENDATION_INVITE -> Invitation from Zhang San to write a recommendation report
+                // map.put(templateDo.getMessageScene() + "_" + templateDo.getMessageType(), templateDo.getTemplate());
 
-                //使用唯一key
+                // Use a unique key
                 map.put(templateDo.getMessageKey(), templateDo.getTemplate());
             }
         }

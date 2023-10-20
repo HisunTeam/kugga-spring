@@ -24,9 +24,9 @@ import java.util.List;
 import static com.hisun.kugga.duke.enums.TaskStatusEnum.TASK_STATUS_5;
 
 /**
- * 公会聊天、推荐报告、认证退款等
+ * League Task Service Implementation
  *
- * @author zuo_cheng
+ * Author: Zuo Cheng
  */
 @Slf4j
 @Service
@@ -46,26 +46,26 @@ public class LeagueTaskServiceImpl implements LeagueTaskService {
     public void authExpire(TaskDO task) {
         int res0 = taskMapper.updateAuthExpire(task.getId());
         if (res0 != 1) {
-            log.info("任务ID[{}],做公会认证过期退款时,任务为状态异常,无法执行退款处理", task.getId());
+            log.info("Task ID [{}], when processing refund for expired league authentication, the task is in an abnormal state and cannot execute the refund process", task.getId());
             return;
         }
-        //将公会公告设置成失效
+        // Set league notices to invalid
         leagueNoticeMapper.updateInvalidByTaskId(task.getId());
-        //查询认证列表
+        // Retrieve the list of authentications
         List<TaskLeagueAuthDO> auths = taskLeagueAuthMapper.selectByTaskId(task.getId());
-        //待退款金额
+        // Amount to be refunded
         BigDecimal refAmt = new BigDecimal("0");
-        //把任务所关联的金额金相加
+        // Sum up the associated amounts for the task
         for (TaskLeagueAuthDO obj : auths) {
             refAmt = refAmt.add(obj.getAmount());
         }
-        //更新认证订单为退款
+        // Update authentication orders to refunded
         taskLeagueAuthMapper.updateRefundByTaskId(task.getId());
 
-        log.info("公会认证过期退款订单号[{}],退款金额[{}]", task.getOrderRecord(), refAmt);
+        log.info("League authentication expired refund order number [{}], refund amount [{}]", task.getOrderRecord(), refAmt);
 
         if (refAmt.compareTo(new BigDecimal("0")) == 0) {
-            log.info("任务ID[{}],做公会认证过期退款时,待退款金额为0,不做退款", task.getId());
+            log.info("Task ID [{}], when processing refund for expired league authentication, the refund amount is 0, no refund is made", task.getId());
             return;
         }
 
@@ -74,8 +74,8 @@ public class LeagueTaskServiceImpl implements LeagueTaskService {
                     .setAppOrderNo(task.getOrderRecord())
                     .setRefundAmount(refAmt));
         } catch (Exception e) {
-            //忽略报错,打印日志方便追查问题
-            log.error("订单[{}]做公会认证过期退款时,退款失败", task.getOrderRecord(), e);
+            // Ignore errors, log for troubleshooting
+            log.error("Order [{}] failed to refund when processing refund for expired league authentication", task.getOrderRecord(), e);
         }
     }
 
@@ -84,26 +84,26 @@ public class LeagueTaskServiceImpl implements LeagueTaskService {
     public void chatExpire(TaskDO task) {
         int res0 = taskMapper.updateChatExpire(task.getId());
         if (res0 != 1) {
-            log.info("任务ID[{}],做聊天过期退款时,任务为状态异常,无法执行退款处理", task.getId());
+            log.info("Task ID [{}], when processing refund for expired chat, the task is in an abnormal state and cannot execute the refund process", task.getId());
             return;
         }
-        //更新公告为失效
+        // Set notices to invalid
         leagueNoticeMapper.updateInvalidByTaskId(task.getId());
-        //查询聊天订单列表
+        // Retrieve the list of chat orders
         List<TaskChatDO> chats = taskChatMapper.selectByTaskId(task.getId());
-        //待退款金额
+        // Amount to be refunded
         BigDecimal refAmt = new BigDecimal("0");
-        //把任务所关联的金额金相加
+        // Sum up the associated amounts for the task
         for (TaskChatDO obj : chats) {
             refAmt = refAmt.add(obj.getAmount());
         }
-        //更新认证订单为退款
+        // Update chat orders to refunded
         taskChatMapper.updateRefundByTaskId(task.getId());
 
-        log.info("聊天过期退款订单号[{}],退款金额[{}]", task.getOrderRecord(), refAmt);
+        log.info("Chat expired refund order number [{}], refund amount [{}]", task.getOrderRecord(), refAmt);
 
         if (refAmt.compareTo(new BigDecimal("0")) == 0) {
-            log.info("任务ID[{}],做聊天过期退款时,待退款金额为0,不做退款", task.getId());
+            log.info("Task ID [{}], when processing refund for expired chat, the refund amount is 0, no refund is made", task.getId());
             return;
         }
 
@@ -112,8 +112,8 @@ public class LeagueTaskServiceImpl implements LeagueTaskService {
                     .setAppOrderNo(task.getOrderRecord())
                     .setRefundAmount(refAmt));
         } catch (Exception e) {
-            //忽略报错,打印日志方便追查问题
-            log.error("订单[{}]做聊天过期退款时,退款失败", task.getOrderRecord(), e);
+            // Ignore errors, log for troubleshooting
+            log.error("Order [{}] failed to refund when processing refund for expired chat", task.getOrderRecord(), e);
         }
     }
 
@@ -124,23 +124,23 @@ public class LeagueTaskServiceImpl implements LeagueTaskService {
         update.setStatus(LeagueNoticeStatusEnum.NOTICE_STATUS_4);
         update.setUpdater("SYS");
 
-        //更新公告为失效
+        // Set notices to invalid
         leagueNoticeMapper.updateInvalidById(update);
-        //根据通知ID获取到定单号与定单金额
+        // Get order number and order amount based on the notice ID
         TaskReportDO report = taskReportMapper.selectByNoticeId(notice.getId());
         if (ObjectUtil.isNull(report)) {
-            log.info("通知ID[{}],无可退款数据", notice.getId());
+            log.info("Notice ID [{}], no refundable data available", notice.getId());
             return;
         }
-        //待退款金额
+        // Amount to be refunded
         BigDecimal refAmt = report.getAmount();
-        //更新认证订单为退款
+        // Update report orders to refunded
         taskReportMapper.updateRefundByNoticeId(notice.getId());
 
-        log.info("推荐报告过期退款订单号[{}],退款金额[{}]", report.getAppOrderNo(), refAmt);
+        log.info("Report expired refund order number [{}], refund amount [{}]", report.getAppOrderNo(), refAmt);
 
         if (ObjectUtil.isNull(refAmt) || refAmt.compareTo(new BigDecimal("0")) == 0) {
-            log.info("通知ID[{}],做推荐报告过期退款时,待退款金额为0,不做退款", notice.getId());
+            log.info("Notice ID [{}], when processing refund for expired report, the refund amount is 0, no refund is made", notice.getId());
             return;
         }
 
@@ -149,42 +149,42 @@ public class LeagueTaskServiceImpl implements LeagueTaskService {
                     .setAppOrderNo(report.getAppOrderNo())
                     .setRefundAmount(refAmt));
         } catch (Exception e) {
-            //忽略报错,打印日志方便追查问题
-            log.error("订单[{}]做推荐报告过期退款时,退款失败", report.getAppOrderNo(), e);
+            // Ignore errors, log for troubleshooting
+            log.error("Order [{}] failed to refund when processing refund for expired report", report.getAppOrderNo(), e);
         }
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void leagueAuthRefund(TaskDO taskDO) {
-        //更新任务状态
+        // Update task status
         taskMapper.updateById(new TaskDO().setId(taskDO.getId()).setStatus(TASK_STATUS_5).setUpdater("leagueAuthRefund"));
         LambdaQueryWrapperX<LeagueNoticeDO> noticeWrapper = new LambdaQueryWrapperX<LeagueNoticeDO>()
                 .eq(LeagueNoticeDO::getTaskId, taskDO.getId())
                 .eq(LeagueNoticeDO::getType, LeagueNoticeTypeEnum.NOTICE_TYPE_3)
                 .eq(LeagueNoticeDO::getStatus, LeagueNoticeStatusEnum.NOTICE_STATUS_1);
-        //更改公告栏状态
+        // Change notice status
         leagueNoticeMapper.update(new LeagueNoticeDO().setStatus(LeagueNoticeStatusEnum.NOTICE_STATUS_3).setUpdater("leagueAuthRefund"), noticeWrapper);
 
         LambdaQueryWrapperX<TaskLeagueAuthDO> orderWrapper = new LambdaQueryWrapperX<TaskLeagueAuthDO>()
                 .eq(TaskLeagueAuthDO::getTaskId, taskDO.getId())
                 .eq(TaskLeagueAuthDO::getPayType, TaskPayTypeEnum.PAY)
                 .eq(TaskLeagueAuthDO::getStatus, PayStatusEnum.WAIT_REFUND);
-        //查询订单列表
+        // Query the list of orders
         List<TaskLeagueAuthDO> orderList = taskLeagueAuthMapper.selectList(orderWrapper);
-        //更新订单状态
+        // Update order status
         taskLeagueAuthMapper.update(new TaskLeagueAuthDO().setStatus(PayStatusEnum.REFUND).setUpdater("leagueAuthRefund"), orderWrapper);
         BigDecimal amount = orderList.stream().map(TaskLeagueAuthDO::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        log.info("公会认证过期退款订单号[{}],退款金额[{}]", taskDO.getOrderRecord(), amount);
+        log.info("League authentication expired refund order number [{}], refund amount [{}]", taskDO.getOrderRecord(), amount);
         if (amount.compareTo(BigDecimal.ZERO) == 0) {
-            log.info("任务ID[{}],做公会认证过期退款时,待退款金额为0,不做退款", taskDO.getId());
+            log.info("Task ID [{}], when processing refund for expired league authentication, the refund amount is 0, no refund is made", taskDO.getId());
             return;
         }
         try {
             payOrderService.refund(new RefundReqDTO().setAppOrderNo(taskDO.getOrderRecord()).setRefundAmount(amount));
         } catch (Exception e) {
-            //忽略报错,打印日志方便追查问题
-            log.error("订单[{}]做公会认证过期退款时,退款失败", taskDO.getOrderRecord(), e);
+            // Ignore errors, log for troubleshooting
+            log.error("Order [{}] failed to refund when processing refund for expired league authentication", taskDO.getOrderRecord(), e);
             throw new RuntimeException();
         }
     }

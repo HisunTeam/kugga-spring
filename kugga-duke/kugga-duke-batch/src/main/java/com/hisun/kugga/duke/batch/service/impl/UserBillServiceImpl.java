@@ -13,9 +13,9 @@ import org.springframework.validation.annotation.Validated;
 import javax.annotation.Resource;
 
 /**
- * 用户账单 Service 实现类
+ * User Bill Service Implementation
  *
- * @author zhou_xiong
+ * Author: Zhou Xiong
  */
 @Service
 @Validated
@@ -23,7 +23,6 @@ public class UserBillServiceImpl implements UserBillService {
 
     @Resource
     private UserBillMapper userBillMapper;
-
 
     @Override
     @DistributedLocked(lockName = "'createUserBill:'+#userBillDO.getWalletOrderNo()+#userBillDO.getUserId()", leaseTime = 5, waitTime = 0)
@@ -37,5 +36,4 @@ public class UserBillServiceImpl implements UserBillService {
             userBillMapper.insert(userBillDO);
         }
     }
-
 }

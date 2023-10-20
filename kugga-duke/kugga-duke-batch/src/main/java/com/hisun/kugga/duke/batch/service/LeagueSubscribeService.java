@@ -7,29 +7,29 @@
 //import com.hisun.kugga.framework.common.pojo.PageResult;
 //
 ///**
-// * @Description: 订阅服务
-// * @author： Lin
+// * @Description: Subscription Service
+// * @Author: Lin
 // * @Date 2022/10/19 14:58
 // */
 //public interface LeagueSubscribeService {
 //
 //    /**
-//     * 订阅套餐
-//     * @param subscribeVo
+//     * Subscribe to a package
+//     * @param subscribeVo The SubscribeVo object.
 //     */
 //    void subscribePackage(SubscribeVo subscribeVo);
 //
 //
 //    /**
-//     * 获取我的公会订阅信息
-//     * @param pageVO
-//     * @return
+//     * Get information about my league subscriptions
+//     * @param pageVO The SubscribePageReqVO object.
+//     * @return PageResult containing SubscribeRespVO objects.
 //     */
 //    PageResult<SubscribeRespVO> getLeagueSubscribePage(SubscribePageReqVO pageVO);
 //
 //    /**
-//     * 取消订阅、继续订阅
-//     * @param updateReqVO
+//     * Cancel or continue a subscription
+//     * @param updateReqVO The SubscribeUpdateReqVO object.
 //     */
 //    void updateSubscribe(SubscribeUpdateReqVO updateReqVO);
 //}

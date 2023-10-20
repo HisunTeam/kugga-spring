@@ -26,9 +26,9 @@ import java.math.BigDecimal;
 
 
 /**
- * 订单 Service 实现类
+ * Pay Order Service Implementation
  *
- * @author zuo_cheng
+ * Author: Zuo Cheng
  */
 @Slf4j
 @Service
@@ -46,18 +46,18 @@ public class PayOrderServiceImpl implements PayOrderService {
 
     @Override
     public void refund(RefundReqDTO refundReqDTO) {
-        // 查询交易订单
+        // Query the transaction order
         PayOrderDO payOrderDO = payOrderMapper.selectOne(new LambdaQueryWrapper<PayOrderDO>()
                 .eq(PayOrderDO::getAppOrderNo, refundReqDTO.getAppOrderNo()));
         if (ObjectUtil.isNull(payOrderDO) || !PayOrderStatus.PAY_SUCCESS.equals(payOrderDO.getStatus())) {
             return;
         }
-        // 退款金额不能大于可退款金额
+        // Refund amount cannot exceed the available refundable amount
         BigDecimal canRefundAmount = AmountUtil.sub(payOrderDO.getPayAmount(), payOrderDO.getRefundAmount());
         if (refundReqDTO.getRefundAmount().compareTo(canRefundAmount) > 0) {
             ServiceException.throwServiceException(BusinessErrorCodeConstants.ILLEGAL_REFUND_AMOUNT);
         }
-        // 请求钱包退款
+        // Request a refund from the wallet
         DrawbackApplyReqBody drawbackApplyReqBody = new DrawbackApplyReqBody()
                 .setDrawbackAmount(AmountUtil.yuanToFen(refundReqDTO.getRefundAmount()))
                 .setAccount(payOrderDO.getAccountId())
@@ -65,8 +65,8 @@ public class PayOrderServiceImpl implements PayOrderService {
                 .setOrderType("pay")
                 .setOriginalOrderNo(payOrderDO.getWalletOrderNo());
         DrawbackApplyRspBody drawbackApplyRspBody = walletClient.drawbackApply(drawbackApplyReqBody);
-        log.info("订单[{}]退款返回：{}", refundReqDTO.getAppOrderNo(), drawbackApplyRspBody);
-        // 保存退款记录
+        log.info("Order [{}] refund response: {}", refundReqDTO.getAppOrderNo(), drawbackApplyRspBody);
+        // Save the refund record
         PayOrderRefundDO payOrderRefundDO = new PayOrderRefundDO()
                 .setAppOrderNo(payOrderDO.getAppOrderNo())
                 .setRefundNo(drawbackApplyRspBody.getOrderNo())

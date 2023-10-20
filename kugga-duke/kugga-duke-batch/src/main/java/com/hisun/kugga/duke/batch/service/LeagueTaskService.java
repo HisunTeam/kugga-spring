@@ -4,29 +4,29 @@ import com.hisun.kugga.duke.batch.dal.dataobject.league.LeagueNoticeDO;
 import com.hisun.kugga.duke.batch.dal.dataobject.league.TaskDO;
 
 /**
- * 公会任务服务(用户公会认证、聊天 、推荐报告退款)
+ * Public Association Task Service (User Association Certification, Chat, Recommendation Report Refund)
  *
  * @author zuo_cheng
  */
 public interface LeagueTaskService {
     /**
-     * 公会认证过期处理
+     * Public Association Authentication Expiration Processing
      *
-     * @param task
+     * @param task The TaskDO object.
      */
     void authExpire(TaskDO task);
 
     /**
-     * 公会聊天过期处理
+     * Public Association Chat Expiration Processing
      *
-     * @param task
+     * @param task The TaskDO object.
      */
     void chatExpire(TaskDO task);
 
     /**
-     * 推荐报告退款
+     * Recommendation Report Refund
      *
-     * @param notice
+     * @param notice The LeagueNoticeDO object.
      */
     void reportExpire(LeagueNoticeDO notice);
 

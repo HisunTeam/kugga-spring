@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 
 
 /**
- * 公会账单 Service 实现类
+ * League Bill Service Implementation
  *
  * @author zhou_xiong
  */

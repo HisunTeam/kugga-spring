@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 /**
- * Job 日志 Service 实现类
+ * Job Log Service Implementation Class
  *
  * @author 芋道源码
  */

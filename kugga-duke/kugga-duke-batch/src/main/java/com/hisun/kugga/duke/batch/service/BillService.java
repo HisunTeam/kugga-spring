@@ -1,16 +1,15 @@
 package com.hisun.kugga.duke.batch.service;
 
-
 import com.hisun.kugga.duke.batch.bo.BillBO;
 
 /**
- * @author: zhou_xiong
+ * Author: zhou_xiong
  */
 public interface BillService {
     /**
-     * 根据账户类型生成账单
+     * Generate bills based on the account type.
      *
-     * @param billBO
+     * @param billBO The billBO object containing bill details.
      */
     void saveBillByAccountType(BillBO billBO);
 }

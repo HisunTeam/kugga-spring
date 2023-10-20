@@ -15,7 +15,9 @@ import javax.annotation.Resource;
 import static com.hisun.kugga.duke.common.CommonConstants.SNOWFLAKE;
 
 /**
- * @author: zhou_xiong
+ * Implementation of Bill Service
+ *
+ * Author: Zhou Xiong
  */
 @Service
 public class BillServiceImpl implements BillService {
@@ -51,7 +53,7 @@ public class BillServiceImpl implements BillService {
                 leagueBillService.insertIfNotExist(leagueBillDO);
                 break;
             case PLATFORM:
-                // todo 是否要保存平台账单
+                // todo: Do you want to save platform bills?
                 return;
         }
     }
