@@ -33,18 +33,19 @@ import static com.hisun.kugga.duke.common.IdentifierConstants.dd_MM_yyyy;
 import static com.hisun.kugga.duke.common.IdentifierConstants.yyyy_MM_dd;
 
 /**
- * @Description: 公会订阅-通知
- * @author： Lin
- * @Date 2022/10/20 15:09
+ * @Description: League Subscription Notification Job
+ * This job sends notifications to users regarding their league subscriptions.
+ * Author: Lin
+ * Date: 2022/10/20 15:09
  */
 @Slf4j
 @Component
 public class SubscribeNoticeJob implements JobHandler {
 
-    //邮件调用地址
+    // Email calling address
     @Value("${duke.league.backed.subscribeEmailNotice:}")
     private String emailUrl;
-    // 跳转个人中心订阅页面 https://www.hisunpay66.com:8020/mine/subscribeView
+    // Redirect to the personal center subscription page
     @Value("${duke.league.fronted.subscribeView:}")
     private String mySubscribeView;
 
@@ -58,17 +59,17 @@ public class SubscribeNoticeJob implements JobHandler {
     private InnerCallHelper innerCallHelper;
 
     /**
-     * 公会订阅的套餐，定时通知
+     * League subscription packages, scheduled notifications
      *
-     * @param param 参数
+     * @param param Parameters
      * @return
      * @throws Exception
      */
     @Override
     public String execute(String param) throws Exception {
-        log.info(" SubscribeNoticeJob 定时处理订阅消息通知数据 start:{}", param);
+        log.info("SubscribeNoticeJob: Processing scheduled subscription notification data start:{}", param);
 
-        // 提前三天通知，  日期+3，status订阅状态为true  查询所有订阅中的数据
+        // Notify three days in advance, date +3, status is true, query all subscriptions in progress
         LocalDateTime now = LocalDateTime.now();
         String expireTime = DateUtil.format(now.plusDays(3L), yyyy_MM_dd);
         List<LeagueSubscribeDO> subscribes = subscribeMapper.selectSubscribes2(expireTime, true);
@@ -80,40 +81,24 @@ public class SubscribeNoticeJob implements JobHandler {
             if (ObjectUtil.equal(BigDecimal.ZERO, subscribe.getPrice())) {
                 continue;
             }
-            // 站内信消息
+            // Send an internal message
             sendMessage(subscribe);
 
+            // Send an HTTP request to send a message
             httpInvokeSendMessage(subscribe);
 
         }
 
-        log.info(" SubscribeNoticeJob 定时处理订阅消息通知数据 end:{}", LocalDateTime.now());
+        log.info("SubscribeNoticeJob: Processing scheduled subscription notification data end:{}", LocalDateTime.now());
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }
 
     /**
-     * 给用户发 过期消息
+     * Send a message to the user about the expiration
      *
      * @param subscribe
      */
     private void sendMessage(LeagueSubscribeDO subscribe) {
-//        String content = messageService.getContent(MessageTemplateEnum.LEAGUE_SUBSCRIBE_RENEWAL);
-
-//        String messageParam = JSONUtil.toJsonPrettyStr(contentParamVo);
-//        //设置需要插入的数据   // 您在{后端开发工程师公会}的订阅将于 2022年11月11日 以 10$/月的价格自动续期，清保持账户余额充足  10/20/2022
-//        MessagesDO insert = new MessagesDO()
-//                .setMessageKey(MessageTemplateEnum.LEAGUE_SUBSCRIBE_RENEWAL.name())
-//                .setScene(MessageSceneEnum.LEAGUE_SUBSCRIBE_RENEWAL.getScene())
-//                .setType(MessageTypeEnum.INVITE.getCode())
-//                .setInitiatorLeagueId(subscribe.getLeagueId())
-//                .setReceiverId(subscribe.getUserId())
-//                .setContent(content)
-//                .setMessageParam(messageParam)
-//                .setBusinessId(subscribe.getId())
-//                .setReadFlag(MessageReadStatusEnum.UNREAD.getCode())
-//                .setDealFlag(MessageDealStatusEnum.NO_DEAL.getCode());
-//        messagesMapper.insert(insert);
-
         ContentParamVo contentParamVo = new ContentParamVo()
                 .setReceiverId(subscribe.getUserId())
                 .setInitiatorLeagueId(subscribe.getLeagueId())
@@ -123,7 +108,6 @@ public class SubscribeNoticeJob implements JobHandler {
                         .setExpireTime(subscribe.getExpireTime())
                 );
 
-        // 您在{后端开发工程师公会}的订阅将于{2022年11月11日}以{10}$/月的价格自动续期，清保持账户余额充足
         SendMessageReqDTO message = new SendMessageReqDTO()
                 .setMessageTemplate(MessageTemplateEnum.LEAGUE_SUBSCRIBE_RENEWAL)
                 .setMessageScene(MessageSceneEnum.LEAGUE_SUBSCRIBE_RENEWAL)
@@ -136,23 +120,17 @@ public class SubscribeNoticeJob implements JobHandler {
         messageService.sendMessage(message);
     }
 
-
     /**
-     * http 发送邮件
-     *
-     * @return
+     * Send an HTTP request to send a message
      */
     private void httpInvokeSendMessage(LeagueSubscribeDO subscribe) {
 
         String uuid = innerCallHelper.genCert(subscribe.getId());
 
-        //自2022年10月20日起，您在后台公会师公会的订阅将以10$/月的价格自动续期，
-        // 为谐免扣款时账户余额不足，请您及时前往钱包充值，以免因余额不足导致取消订阅。若要了解详细信息或取漪订阅请前往个人中心-订阅查看
         ArrayList<String> replaceValues = new ArrayList<>();
         replaceValues.add(subscribe.getLeagueName());
         replaceValues.add(DateUtil.format(subscribe.getExpireTime(), dd_MM_yyyy));
         replaceValues.add(subscribe.getPrice().toString());
-        // 订阅跳转url
         replaceValues.add(mySubscribeView);
 
         GeneralEmailInnerReqDTO innerReqDTO = new GeneralEmailInnerReqDTO();
@@ -166,7 +144,7 @@ public class SubscribeNoticeJob implements JobHandler {
         try {
             innerCallHelper.post(emailUrl, innerReqDTO, GeneralEmailInnerReqDTO.class);
         } catch (Exception exception) {
-            log.error("订阅续期-邮件通知异常：",exception);
+            log.error("Subscription renewal - email notification exception:", exception);
         }
     }
 }

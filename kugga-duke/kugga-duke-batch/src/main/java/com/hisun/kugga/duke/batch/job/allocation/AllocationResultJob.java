@@ -36,7 +36,7 @@ import static com.hisun.kugga.duke.common.CommonConstants.WalletStatus.FAILED;
 import static com.hisun.kugga.duke.common.CommonConstants.WalletStatus.SUCCESS;
 
 /**
- * 分账结果定时轮询
+ * Allocation Result Job for Polling
  *
  * @author: zhou_xiong
  */
@@ -57,7 +57,7 @@ public class AllocationResultJob implements JobHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String execute(String param) throws Exception {
-        // 查询preSplit状态的订单子集
+        // Query orders in the preSplit status
         List<PayOrderSubDO> payOrderSubDOList = payOrderSubMapper.selectPreSplitOrderSub();
         if (CollUtil.isEmpty(payOrderSubDOList)) {
             return GlobalErrorCodeConstants.SUCCESS.getMsg();
@@ -65,21 +65,21 @@ public class AllocationResultJob implements JobHandler {
         Map<String, List<PayOrderSubDO>> groupMap = payOrderSubDOList.stream()
                 .collect(Collectors.groupingBy(PayOrderSubDO::getSplitNo));
         groupMap.forEach((k, v) -> {
-            // 查询分账结果
+            // Query splitting results
             AllocationResultRspBody allocationResultRspBody = walletClient.allocationResult(new AllocationResultReqBody().setSharingNo(k));
             List<Long> idList = v.stream().map(PayOrderSubDO::getId).collect(Collectors.toList());
-            // 查询订单信息
+            // Query order information
             PayOrderDO payOrderDO = payOrderMapper.selectOne(new LambdaQueryWrapper<PayOrderDO>()
                     .eq(PayOrderDO::getAppOrderNo, v.get(0).getAppOrderNo()));
             BigDecimal splitAmount = v.stream().map(PayOrderSubDO::getAmount)
                     .filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
             if (SUCCESS.equals(allocationResultRspBody.getProfitSharingStatus())) {
-                // 修改订单子集分账成功
+                // Update sub-orders to split success
                 payOrderSubMapper.updateStatus(idList, PayOrderSubStatus.SPLIT_SUCCESS);
                 v.forEach(payOrderSubDO -> {
-                    // 分账成功后，生成用户/公会账单   是否要生成平台账单
+                    // After successful splitting, generate user/league bills. Do we need to generate platform bills?
                     if (AccountType.USER.equals(payOrderSubDO.getAccountType())) {
-                        // 生成用户账单
+                        // Generate user bill
                         UserBillDO userBillDO = new UserBillDO()
                                 .setBillNo(SNOWFLAKE.nextIdStr())
                                 .setUserId(payOrderSubDO.getReceiverId())
@@ -88,7 +88,7 @@ public class AllocationResultJob implements JobHandler {
                                 .setRemark(payOrderSubDO.getRemark());
                         userBillMapper.insert(userBillDO);
                     } else {
-                        // 生成公会账单
+                        // Generate league bill
                         LeagueBillDO leagueBillDO = new LeagueBillDO()
                                 .setBillNo(SNOWFLAKE.nextIdStr())
                                 .setWalletOrderNo(payOrderSubDO.getWalletOrderNo())
@@ -99,7 +99,7 @@ public class AllocationResultJob implements JobHandler {
                         leagueBillMapper.insert(leagueBillDO);
                     }
                 });
-                // 修改订单已分账金额，如果分账完毕，修改订单状态为splitSuccess
+                // Update the order's split amount, and if the splitting is complete, update the order status to splitSuccess
                 PayOrderDO payOrderUpdate = new PayOrderDO().setId(payOrderDO.getId())
                         .setSplitAmount(splitAmount);
                 payOrderMapper.updateSplitAmount(payOrderUpdate);
@@ -107,9 +107,9 @@ public class AllocationResultJob implements JobHandler {
                     payOrderMapper.updateStatus(payOrderDO.getId(), PayOrderStatus.SPLIT_SUCCESS);
                 }
             } else if (FAILED.equals(allocationResultRspBody.getProfitSharingStatus())) {
-                // 修改订单子集分账失败
+                // Update sub-orders to split failed
                 payOrderSubMapper.updateStatus(idList, PayOrderSubStatus.SPLIT_FAILED);
-                // todo 如何确定订单是分账失败状态
+                // TODO: Determine how to handle orders in a failed split state
             }
         });
         return GlobalErrorCodeConstants.SUCCESS.getMsg();

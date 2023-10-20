@@ -17,9 +17,9 @@ import java.util.List;
 import static com.hisun.kugga.framework.common.exception.util.ServiceExceptionUtil.exception;
 
 /**
- * 上升热贴计数
- *
- * @author: zuo_cheng
+ * Rise Hot Posts Count Job
+ * Counts the rising posts in a forum.
+ * Author: zuo_cheng
  */
 @Slf4j
 @Component
@@ -36,13 +36,14 @@ public class RiseHotPostsJob implements JobHandler {
         if (StrUtil.isBlank(param)) {
             throw exception(BusinessErrorCodeConstants.ILLEGAL_PARAMS);
         }
-        //统计上一分钟的数据
+        // Count the data for the previous minute
         LocalDateTime nowTime = LocalDateTime.now().withSecond(0).withNano(0);
         LocalDateTime startTime = nowTime.minusMinutes(Long.valueOf(param));
         LocalDateTime entTime = nowTime.minusMinutes(1L).withSecond(59);
-        //查询指定时间内的上升量
+        // Query the rising post count within the specified time range
         List<PostsRiseCountDO> list = postsRiseCountMapper.queryRiseNum(startTime, entTime);
-        log.info("读取[{}]-[{}]时间内,发生回贴,讨论的数据[{}]条(PS:轻轻的打个日志,因为一直没有数据进来)", startTime, entTime, list.size());
+        log.info("Read data for discussions and replies that occurred between [{}] and [{}]. Found [{}] records (Note: Logging is done here as there has been no incoming data)", startTime, entTime, list.size());
+        // Save the batch of rising post counts
         postsRiseCountBatchInsertMapper.saveBatch(list);
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }

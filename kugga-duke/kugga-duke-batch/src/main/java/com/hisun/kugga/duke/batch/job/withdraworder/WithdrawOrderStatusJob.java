@@ -26,9 +26,9 @@ import java.util.Iterator;
 import static com.hisun.kugga.duke.common.CommonConstants.SNOWFLAKE;
 
 /**
- * 提现订单结果定时轮询
- *
- * @author: zhou_xiong
+ * Scheduled Job for Withdraw Order Status
+ * This job periodically checks the status of withdrawal orders and updates them accordingly.
+ * Author: zhou_xiong
  */
 @Slf4j
 @Component
@@ -43,17 +43,17 @@ public class WithdrawOrderStatusJob implements JobHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String execute(String param) throws Exception {
-        // 游标查询数据库中所有draft状态提现订单号
+        // Cursor query to retrieve all withdrawal orders in the 'draft' state from the database
         Cursor<WithdrawOrderDO> selectCursor = withdrawOrderMapper.selectDraftOrders();
         try {
             Iterator<WithdrawOrderDO> iterator = selectCursor.iterator();
             while (iterator.hasNext()) {
                 WithdrawOrderDO withdrawOrderDO = iterator.next();
-                // 查询提现详情
+                // Query withdrawal details
                 WithdrawDetailRspBody withdrawDetailRspBody = walletClient.withdrawDetail(new WithdrawDetailReqBody().setOrderNo(withdrawOrderDO.getWalletOrderNo()));
-                // 修改提现订单状态
+                // Update the withdrawal order status
                 withdrawOrderMapper.updateStatus(withdrawOrderDO.getWalletOrderNo(), withdrawDetailRspBody);
-                // 提现成功后生成用户账单
+                // Generate a user bill after a successful withdrawal
                 if (StrUtil.equals(withdrawDetailRspBody.getStatus(), WithdrawStatus.SUCCESS.getKey())) {
                     UserBillDO userBillDO = new UserBillDO()
                             .setBillNo(SNOWFLAKE.nextIdStr())

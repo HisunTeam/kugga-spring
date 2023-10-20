@@ -31,9 +31,9 @@ import static com.hisun.kugga.duke.common.CommonConstants.SNOWFLAKE;
 import static com.hisun.kugga.duke.common.CommonConstants.WalletStatus.*;
 
 /**
- * 支付订单结果定时轮询
- *
- * @author: zhou_xiong
+ * Scheduled Task for Pay Order Status Polling
+ * This task periodically checks the status of payment orders.
+ * Author: zhou_xiong
  */
 @Slf4j
 @Component
@@ -52,21 +52,21 @@ public class PayOrderStatusJob implements JobHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String execute(String param) throws Exception {
-        // 游标查询数据库中所有初始化状态充值订单号
+        // Cursor-based query for all payment orders in the initialized state
         Cursor<PayOrderDO> selectCursor = payOrderMapper.selectPrepayOrders();
         try {
             Iterator<PayOrderDO> iterator = selectCursor.iterator();
             while (iterator.hasNext()) {
                 PayOrderDO payOrderDO = iterator.next();
-                // 查询支付详情
+                // Query payment details
                 PayDetailRspBody payDetailRspBody = walletClient.payDetail(new PayDetailReqBody().setOrderNo(payOrderDO.getWalletOrderNo()));
-                // 修改支付订单状态
+                // Update payment order status
                 if (StrUtil.equalsAny(payDetailRspBody.getStatus(), SUCCESS, FAILED, CLOSED)) {
                     payOrderMapper.update(null, new LambdaUpdateWrapper<PayOrderDO>()
                             .set(PayOrderDO::getStatus, statusEscape(payDetailRspBody.getStatus()))
                             .eq(PayOrderDO::getAppOrderNo, payOrderDO.getAppOrderNo()));
                 }
-                // 支付成功后生成用户账单
+                // Generate user bills after successful payment
                 if (StrUtil.equals(payDetailRspBody.getStatus(), SUCCESS)) {
                     BillBO billBO = new BillBO()
                             .setAccountType(payOrderDO.getAccountType())

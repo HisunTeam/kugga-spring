@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 推荐报告失效定时任务
- *
- * @author: zuo_cheng
+ * Scheduled Task for Expired Recommendation Reports
+ * This task handles the expiration of recommendation reports and updates their status.
+ * Author: zuo_cheng
  */
 @Slf4j
 @Component
@@ -41,30 +41,30 @@ public class ReportExpireJob implements JobHandler {
 
 
     /**
-     * @param param 参数
+     * @param param Parameter
      * @return
      * @throws Exception
      */
     @Override
     public String execute(String param) throws Exception {
-        //查询未接单和已接单的数据
+        // Query data that is not accepted and already accepted
         List<LeagueNoticeStatusEnum> status = new ArrayList<>(2);
         status.add(LeagueNoticeStatusEnum.NOTICE_STATUS_1);
         status.add(LeagueNoticeStatusEnum.NOTICE_STATUS_2);
 
-        log.info(" ReportExpire 定时处理推荐报告过期 start:{}", LocalDateTime.now());
+        log.info("Scheduled Task for Report Expiration started: {}", LocalDateTime.now());
         List<LeagueNoticeDO> list = leagueNoticeMapper.queryExpire(status);
         list.forEach(item -> redissonUtils.tryLock(TASK_LOCK_LEAGUE_NOTICE + item.getId(), () -> leagueTaskService.reportExpire(item)));
 
-        // 消息过期
+        // Expire messages
         dealMessageExpire(list);
 
-        log.info("ReportExpire 定时处理推荐报告过期 end:{}", LocalDateTime.now());
+        log.info("Scheduled Task for Report Expiration finished: {}", LocalDateTime.now());
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }
 
     private void dealMessageExpire(List<LeagueNoticeDO> list) {
-        //任务失效后把消息改为 已过期
+        // Change messages to expired after the tasks expire
 
         for (LeagueNoticeDO noticeDO : list) {
             MessagesDO messagesDO = new MessagesDO().setDealFlag(MessageDealStatusEnum.EXPIRE.getCode());

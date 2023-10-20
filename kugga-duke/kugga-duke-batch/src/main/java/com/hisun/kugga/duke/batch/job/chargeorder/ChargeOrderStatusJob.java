@@ -26,9 +26,9 @@ import java.util.Iterator;
 import static com.hisun.kugga.duke.common.CommonConstants.SNOWFLAKE;
 
 /**
- * 充值订单结果定时轮询
- *
- * @author: zhou_xiong
+ * Charge Order Status Job for Polling
+ * Handles the results of recharge orders.
+ * Author: zhou_xiong
  */
 @Slf4j
 @Component
@@ -43,17 +43,17 @@ public class ChargeOrderStatusJob implements JobHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String execute(String param) throws Exception {
-        // 游标查询数据库中所有初始化状态充值订单号
+        // Cursor to query all initialized recharge order numbers in the database
         Cursor<ChargeOrderDO> selectCursor = chargeOrderMapper.selectInitChargeOrders();
         try {
             Iterator<ChargeOrderDO> iterator = selectCursor.iterator();
             while (iterator.hasNext()) {
                 ChargeOrderDO chargeOrderDO = iterator.next();
-                // 查询充值详情
+                // Query recharge details
                 ChargeDetailRspBody chargeDetailRspBody = walletClient.chargeDetail(new ChargeDetailReqBody().setOrderNo(chargeOrderDO.getWalletOrderNo()));
-                // 修改充值订单状态
+                // Update recharge order status
                 chargeOrderMapper.updateStatus(chargeOrderDO.getWalletOrderNo(), chargeDetailRspBody.getStatus(), chargeDetailRspBody.getReceivedTime());
-                // 充值成功后生成用户账单
+                // Generate user bill after successful recharge
                 if (StrUtil.equals(chargeDetailRspBody.getStatus(), ChargeOrderStatus.CHARGE_SUCCESS.getKey())) {
                     UserBillDO userBillDO = new UserBillDO()
                             .setBillNo(SNOWFLAKE.nextIdStr())

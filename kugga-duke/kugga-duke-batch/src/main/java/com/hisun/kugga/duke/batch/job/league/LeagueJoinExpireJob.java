@@ -28,9 +28,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @Description: 加入公会过期退款
- * @author： Lin
- * @Date 2022/9/15 15:09
+ * Joining League Expiry Refund Scheduled Task
+ * This task handles the refund for expired join requests to a league.
+ * Author: Lin
+ * Date: 2022/9/15 15:09
  */
 @Slf4j
 @Component
@@ -49,8 +50,8 @@ public class LeagueJoinExpireJob implements JobHandler {
 
     @Override
     public String execute(String param) throws Exception {
-        log.info(" LeagueJoinExpireJob 定时处理加入公会过期退款数据 start:{}", param);
-        //加入公会的申请记录数据是  业务状态是初始化状态0的，支付状态是0免费或者2已支付的(不等于 未支付1) 过期时间<当前时间的
+        log.info("League Join Expire Job started: {}", param);
+        // Select join records that have business status as initialized (0), payment status as free (0) or paid (2) (not unpaid 1), and expiration time less than current time.
 
         List<LeagueJoinDO> expireRecords = joinMapper.selectExpireRecords();
         if (ObjectUtil.isEmpty(expireRecords)) {
@@ -58,7 +59,7 @@ public class LeagueJoinExpireJob implements JobHandler {
         }
         expireRecords.forEach(item -> {
             try {
-                //修改加入记录 和审批记录为过期
+                // Update join and approval records to expired status
                 LeagueJoinDO joinDO = new LeagueJoinDO()
                         .setId(item.getId())
                         .setBusinessStatus(LeagueJoinApprovalTypeEnum.EXPIRE.getValue())
@@ -73,43 +74,31 @@ public class LeagueJoinExpireJob implements JobHandler {
 
                 sendMessage(item);
 
-                //付费才需要退款  免费只需要修改订单状态
+                // Refund only for paid entries, free entries just need to update the order status
                 if (item.getPayFlag()) {
-                    //每次请求前sleep 1秒钟(减小下压力),每次查询至多1000条数据,理论上16分钟可以发完
+                    // Sleep for 1 second before each request (reduce pressure). Query up to 1000 records at a time. Theoretically, it can be completed in 16 minutes.
                     Thread.sleep(1000);
                     payOrderService.refund(new RefundReqDTO()
                             .setAppOrderNo(item.getAppOrderNo()).setRefundAmount(item.getAmount()));
                 }
             } catch (InterruptedException e) {
-                log.error("LeagueJoinExpireJob 数据处理失败(忽略此条错误)[{}]", item, e);
+                log.error("League Join Expire Job data processing failed (ignoring this error) [{}]", item, e);
             }
         });
-        log.info(" LeagueJoinExpireJob 定时处理加入公会过期退款数据 end:{}", LocalDateTime.now());
+        log.info("League Join Expire Job finished: {}", LocalDateTime.now());
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }
 
     /**
-     * 给用户发 过期消息
+     * Send an expiry message to the user
      *
-     * @param joinDO
+     * @param joinDO LeagueJoinDO
      */
     private void sendMessage(LeagueJoinDO joinDO) {
-//        String content = messageService.getContent(MessageTemplateEnum.JOIN_LEAGUE_ACTIVE_EXPIRE);
-//        MessagesDO insert = new MessagesDO()
-//                .setMessageKey(MessageTemplateEnum.JOIN_LEAGUE_ACTIVE_EXPIRE.name())
-//                .setScene(MessageSceneEnum.JOIN_LEAGUE_ACTIVE.getScene())
-//                .setType(MessageTypeEnum.CALLBACK2.getCode())
-//                .setInitiatorLeagueId(joinDO.getLeagueId())
-//                .setReceiverId(joinDO.getUserId())
-//                .setContent(content)
-//                .setReadFlag(MessageReadStatusEnum.UNREAD.getCode())
-//                .setDealFlag(MessageDealStatusEnum.DEAL.getCode());
-//        messagesMapper.insert(insert);
-
         ContentParamVo contentParamVo = new ContentParamVo()
                 .setInitiatorLeagueId(joinDO.getLeagueId())
                 .setInitiatorId(0L);
-        // 因为本次加入申请过期，[{后端开发工程师}]公会已经拒绝您的申请
+        // Because this join request has expired, [{Backend Developer}] has declined your application to join the league
         SendMessageReqDTO message = new SendMessageReqDTO()
                 .setMessageTemplate(MessageTemplateEnum.JOIN_LEAGUE_ACTIVE_EXPIRE)
                 .setMessageScene(MessageSceneEnum.JOIN_LEAGUE_ACTIVE)
@@ -121,5 +110,4 @@ public class LeagueJoinExpireJob implements JobHandler {
                 .setDealStatus(MessageDealStatusEnum.NO_DEAL);
         messageService.sendMessage(message);
     }
-
 }

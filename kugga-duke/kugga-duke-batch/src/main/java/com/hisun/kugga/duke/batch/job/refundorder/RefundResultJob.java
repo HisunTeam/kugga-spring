@@ -32,9 +32,9 @@ import static com.hisun.kugga.duke.common.CommonConstants.WalletStatus.FAILED;
 import static com.hisun.kugga.duke.common.CommonConstants.WalletStatus.SUCCESS;
 
 /**
- * 退款结果定时轮询
- *
- * @author: zhou_xiong
+ * Scheduled Task for Refund Result Polling
+ * This task periodically checks the status of refund orders and processes them based on the wallet refund status.
+ * Author: zhou_xiong
  */
 @Slf4j
 @Component
@@ -53,31 +53,31 @@ public class RefundResultJob implements JobHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String execute(String param) throws Exception {
-        // 查出待退款记录
+        // Retrieve refund records in the 'pending refund' state
         Cursor<PayOrderRefundDO> selectCursor = payOrderRefundMapper.selectPreRefund();
-        // 查询钱包退款结果
+        // Query refund results from the wallet
         Iterator<PayOrderRefundDO> iterator = selectCursor.iterator();
         while (iterator.hasNext()) {
             PayOrderRefundDO payOrderRefundDO = iterator.next();
             DrawbackDetailReqBody drawbackDetailReqBody = new DrawbackDetailReqBody()
                     .setOrderNo(payOrderRefundDO.getRefundNo());
             DrawbackDetailRspBody drawbackDetailRspBody = walletClient.drawbackDetail(drawbackDetailReqBody);
-            // 查询订单记录
+            // Query the order record
             PayOrderDO payOrderDO = payOrderMapper.selectOne(new LambdaQueryWrapper<PayOrderDO>()
                     .eq(PayOrderDO::getAppOrderNo, payOrderRefundDO.getAppOrderNo()));
             if (SUCCESS.equals(drawbackDetailRspBody.getStatus())) {
-                // 修改订单退款记录状态
+                // Modify the status of the refund record
                 payOrderRefundMapper.updateStatus(payOrderRefundDO.getId(), PayOrderRefundStatus.REFUND_SUCCESS,
                         drawbackDetailRspBody.getSuccessTime());
-                // 修改订单状态（部分退款或已退款），退款金额
+                // Modify the order status (partial refund or fully refunded) and refund amount
                 payOrderMapper.updateStatusRefundSuccess(payOrderDO.getId(), payOrderRefundDO.getAmount());
-                // 生成账单
+                // Generate a bill
                 saveRefundBill(payOrderDO, payOrderRefundDO);
             } else if (FAILED.equals(drawbackDetailRspBody.getStatus())) {
-                // 修改订单退款记录状态
+                // Modify the status of the refund record
                 payOrderRefundMapper.updateStatus(payOrderRefundDO.getId(), PayOrderRefundStatus.REFUND_FAILED,
                         drawbackDetailRspBody.getSuccessTime());
-                // 修改订单状态（退款失败）
+                // Modify the order status (refund failed)
                 if (payOrderRefundDO.getAmount().compareTo(payOrderDO.getPayAmount()) >= 0) {
                     payOrderMapper.updateStatus(payOrderDO.getId(), PayOrderStatus.REFUND_FAILED);
                 }
@@ -98,7 +98,7 @@ public class RefundResultJob implements JobHandler {
                 userBillDO.setAmount(payOrderRefundDO.getAmount());
                 userBillDO.setStatus(CommonConstants.BillStatus.SUCCESS);
                 userBillDO.setRemark(payOrderRefundDO.getRemark());
-                // 退款生成账单，可以有多比账单，支付账单和退款账单
+                // Generate a bill for the refund, which can have multiple bills, including payment bills and refund bills
                 userBillMapper.insert(userBillDO);
                 break;
             case LEAGUE:

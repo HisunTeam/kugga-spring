@@ -18,9 +18,9 @@ import javax.annotation.Resource;
 import java.util.Iterator;
 
 /**
- * 红包发放结果定时轮询
- *
- * @author: zhou_xiong
+ * Scheduled Task for Red Packet Distribution Result Polling
+ * This task periodically checks the status of red packet distribution orders.
+ * Author: zhou_xiong
  */
 @Slf4j
 @Component
@@ -35,13 +35,13 @@ public class RedPacketOrderStatusJob implements JobHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String execute(String param) throws Exception {
-        // 游标查询数据库中所有draft状态红包发放订单号
+        // Cursor-based query for all red packet distribution orders in the 'draft' state
         Cursor<RedPacketOrderDO> selectCursor = redPacketOrderMapper.selectDraftOrders();
         try {
             Iterator<RedPacketOrderDO> iterator = selectCursor.iterator();
             while (iterator.hasNext()) {
                 RedPacketOrderDO redPacketOrderDO = iterator.next();
-                // 调用duke应用查询红包状态进行处理
+                // Call the Duke application to query the status of the red packet and process it
                 RedPacketDetailReqDTO redPacketDetailReqDTO = new RedPacketDetailReqDTO();
                 redPacketDetailReqDTO.setAppOrderNo(redPacketOrderDO.getAppOrderNo());
                 redPacketDetailReqDTO.setUuid(innerCallHelper.genCert(redPacketOrderDO.getAppOrderNo()));
@@ -54,5 +54,4 @@ public class RedPacketOrderStatusJob implements JobHandler {
         }
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }
-
 }

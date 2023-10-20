@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 认证失效定时任务
- *
- * @author: zuo_cheng
+ * Scheduled Task for Passive Refund of League Certification
+ * This task handles the passive refund of league certification tasks.
+ * Author: zuo_cheng
  */
 @Slf4j
 @Component
@@ -29,33 +29,28 @@ public class TaskLeagueAuthByRefundJob implements JobHandler {
     private RedissonUtils redissonUtils;
 
     /**
-     * 公会认证 被动退款 定时任务
-     * 先做业务再退款
-     * duke_task    任务表
-     * duke_league_notice   公告栏表
-     * duke_task_league_auth 公会认证订单表
-     * <p>
-     * 1 扫描类型是公会认证 状态是待退款  所有任务
-     * 2 加入分布式锁 key为    "task:league_auth:"+订单号
-     * 业务退款
-     * 3 更改任务表状态 条件是当前任务
-     * 4 更改公告栏状态 条件为当前任务ID 类型是公会认证 （类型为4 TASK_STATUS_4） 状态为待退款     更改任状态为已退款
-     * 5 查询公会认证订单表 条件为当前任务ID 状态为已支付 把所有金额加起来        得出 总金额
-     * 调用退款
-     * 6 拿总金额 和 任务字段order_record 调用退款接口
+     * League Certification Passive Refund Scheduled Task
+     * Process business logic before initiating refunds.
+     * 1. Scan tasks with the type "league certification" and status "to be refunded."
+     * 2. Acquire distributed locks with keys like "task:league_auth:" followed by the order record.
+     * 3. Perform business refund operations:
+     *    - Update task table status for the current task.
+     *    - Update notice board status for the current task ID with type "league certification" (type 4) and status "to be refunded" (TASK_STATUS_4).
+     *    - Query the league certification order table for the current task ID with status "paid" and sum the amounts to get the total amount.
+     *    - Call the refund API with the total amount and task order record.
      *
-     * @param param 参数
+     * @param param Parameter
      * @return
      * @throws Exception
      */
     @Override
     public String execute(String param) throws Exception {
-        log.info(" leagueAuthRefund 定时处理邀请链接失效数据 start:{}", LocalDateTime.now());
+        log.info("Scheduled Task for League Certification Passive Refund started: {}", LocalDateTime.now());
         List<TaskDO> list = taskMapper.queryLeagueAuthRefundList();
         list.stream().forEach(taskDO ->
                 redissonUtils.tryLock(TASK_LOCK_LEAGUE_AUTH + taskDO.getOrderRecord(), () -> leagueTaskService.leagueAuthRefund(taskDO))
         );
-        log.info("leagueAuthRefund 定时处理邀请链接失效数据 end:{}", LocalDateTime.now());
+        log.info("Scheduled Task for League Certification Passive Refund finished: {}", LocalDateTime.now());
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }
 }

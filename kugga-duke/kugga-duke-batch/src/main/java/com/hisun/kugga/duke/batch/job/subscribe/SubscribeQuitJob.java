@@ -25,16 +25,17 @@ import java.util.List;
 import static com.hisun.kugga.duke.common.IdentifierConstants.yyyy_MM_dd;
 
 /**
- * @Description: 公会订阅-退出公会
- * @author： Lin
- * @Date 2022/10/20 15:09
+ * @Description: League Subscription - Quit League
+ * This job handles the process of members quitting a league when their subscription expires.
+ * Author: Lin
+ * Date: 2022/10/20 15:09
  */
 @Slf4j
 @Component
 public class SubscribeQuitJob implements JobHandler {
 
     /**
-     * 余额不足错误码
+     * Insufficient Balance Error Code
      */
     private static final String Insufficient_Balance_Error_Code = "130003";
 
@@ -52,23 +53,23 @@ public class SubscribeQuitJob implements JobHandler {
     private MessagesMapper messagesMapper;
 
     /**
-     * 公会订阅的套餐，定时续费
+     * Handle league subscription cancellations.
      *
-     * @param param 参数
+     * @param param Parameters
      * @return
      * @throws Exception
      */
     @Override
     public String execute(String param) throws Exception {
-        log.info(" SubscribePayJob 定时处理公会订阅支付数据 start:{}", param);
+        log.info("SubscribePayJob: Processing league subscription cancellations start:{}", param);
 
         /*
-        SubscribePayJob 跑定时任务，查询nowDate-1过期且 订阅状态status=true,过期状态expireStatus=false的的数据进行续费，
-            续费成功延期、不成功如余额不足改status为false(这时realStatus=true)
-        SubscribeQuitJob 跑定时任务，查询nowDate-1过期且 status=false(待退出公会的人员)的数据进行退会 + expireStatus=false(堵重)
-            修改expireStatus=true、退出公会、发送退出消息
-         */
-        // 当天跑过期时间为昨天的数据，  日期-1，status订阅状态为false
+        SubscribePayJob runs scheduled tasks to renew subscriptions that expired on nowDate-1,
+            with subscription status status=true and expireStatus=false.
+        SubscribeQuitJob runs scheduled tasks to process cancellations of subscriptions that expired on nowDate-1,
+            with status=false (members waiting to quit the league) and expireStatus=false (not already processed).
+            It updates expireStatus=true, removes members from the league, and sends a cancellation message.
+        */
 
         LocalDateTime now = LocalDateTime.now();
         String expireTime = DateUtil.format(now.minusDays(1L), yyyy_MM_dd);
@@ -81,19 +82,18 @@ public class SubscribeQuitJob implements JobHandler {
             doQuitSubscribe(subscribe);
         }
 
-        log.info(" SubscribePayJob 定时处理公会订阅支付数据 end:{}", LocalDateTime.now());
+        log.info("SubscribePayJob: Processing league subscription cancellations end:{}", LocalDateTime.now());
         return GlobalErrorCodeConstants.SUCCESS.getMsg();
     }
 
     /**
-     * 取消订阅
+     * Handle subscription cancellation.
      *
      * @param subscribe
      */
     private void doQuitSubscribe(LeagueSubscribeDO subscribe) {
-        //修改过期状态、公会成员成员退出、消息通知
+        // Update the expiration status, remove league members, and send a notification
         subscribeMapper.updateSubscribeExpireStatusToTrue(subscribe.getId());
-
         subscribeMapper.deleteLeagueMember(subscribe.getLeagueId(), subscribe.getUserId(), LocalDateTime.now());
     }
 }
