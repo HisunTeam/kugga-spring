@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 任务日志的状态枚举
+ * Task log status enumeration
  *
  * @author 芋道源码
  */
@@ -12,12 +12,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum JobLogStatusEnum {
 
-    RUNNING(0), // 运行中
-    SUCCESS(1), // 成功
-    FAILURE(2); // 失败
+    RUNNING(0), // running
+    SUCCESS(1), // success
+    FAILURE(2); // failed
 
     /**
-     * 状态
+     * status
      */
     private final Integer status;
 
