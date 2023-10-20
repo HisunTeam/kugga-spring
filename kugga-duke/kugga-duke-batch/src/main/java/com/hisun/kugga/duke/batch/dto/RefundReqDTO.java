@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 @Data
 public class RefundReqDTO {
     /**
-     * 内部订单号
+     * Internal Order Number
      */
     @NotEmpty(message = "appOrderNo cannot be empty")
     private String appOrderNo;
     /**
-     * 退款金额不能为空
+     * Refund amount cannot be empty
      */
     @NotNull(message = "refundAmount cannot be empty")
     private BigDecimal refundAmount;
