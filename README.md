@@ -77,7 +77,7 @@ Through endorsing interest communities, promoting personal socializing, initiati
 
 ## 1. Technical Architecture Diagram
 
-![image-20230925150651965](img/kugga-architecture.png)
+![image-20230925150651965](img/kugga-arc.jpg)
 
 ## 2. Technology Stack
 
